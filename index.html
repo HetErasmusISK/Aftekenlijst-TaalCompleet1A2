@@ -1329,10 +1329,15 @@
             });
             
             // Render actieve thema's
-            activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }) => {
+            activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }, activeIndex) => {
                 const themeBookPercentage = Math.round((themeBookCompleted / themeLessons) * 100);
                 const themeOnlinePercentage = Math.round((themeOnlineCompleted / themeLessons) * 100);
                 const themeTotalPercentage = Math.round(((themeBookCompleted + themeOnlineCompleted) / (themeLessons * 2)) * 100);
+                
+                // Alleen het eerste actieve thema is open, de rest dicht
+                const isOpen = activeIndex === 0;
+                const collapsedClass = isOpen ? '' : 'collapsed';
+                const collapsedHeader = isOpen ? '' : 'collapsed';
                 
                 // Verdeel lessen in afgerond en niet-afgerond
                 const completedLessons = [];
@@ -1364,7 +1369,7 @@
                 activeThemesHtml += `
                     <div class="theme-container">
                         <div class="theme-section">
-                            <div class="theme-header" id="theme-header-${themeIdx}" onclick="toggleTheme(${themeIdx})">
+                            <div class="theme-header ${collapsedHeader}" id="theme-header-${themeIdx}" onclick="toggleTheme(${themeIdx})">
                                 <div style="flex: 1;">
                                     <div>${theme.name}</div>
                                     <div style="font-size: 0.85em; opacity: 0.9; margin-top: 5px; display: flex; gap: 15px; align-items: center;">
@@ -1375,7 +1380,7 @@
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
-                            <div class="theme-content" id="theme-content-${themeIdx}">
+                            <div class="theme-content ${collapsedClass}" id="theme-content-${themeIdx}">
                                 <table class="lessons-table">
                                     <thead>
                                         <tr>
