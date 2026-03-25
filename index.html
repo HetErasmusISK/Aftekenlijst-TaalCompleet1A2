@@ -339,6 +339,24 @@
             margin-left: 5px;
         }
         
+        .btn-undo {
+            margin-top: 8px;
+            padding: 4px 10px;
+            background: none;
+            border: 1px solid #adb5bd;
+            border-radius: 6px;
+            color: #6c757d;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-undo:hover {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        
         .no-completed {
             color: #6c757d;
             font-style: italic;
@@ -1458,6 +1476,7 @@
                                 <div class="completed-item-number">${lessonData.lesson.number}${badge}</div>
                                 <div class="completed-item-title">${lessonData.lesson.title}</div>
                                 <div class="completed-item-date">📅 ${displayDate}</div>
+                                <button class="btn-undo" onclick="undoLesson(${themeIdx}, ${lessonData.lessonIdx})">↩️ Ongedaan maken</button>
                             </div>
                         `;
                     });
@@ -1668,6 +1687,18 @@
             }
         }
         
+        async function undoLesson(themeIndex, lessonIndex) {
+            const data = await getStudentData(currentStudent);
+            if (data[themeIndex] && data[themeIndex][lessonIndex]) {
+                data[themeIndex][lessonIndex].book = false;
+                data[themeIndex][lessonIndex].online = false;
+                delete data[themeIndex][lessonIndex].timestamp;
+                delete data[themeIndex][lessonIndex].completedDate;
+            }
+            await saveStudentData(currentStudent, data);
+            await renderStudentProgress();
+        }
+
         initStudents();
     </script>
 </body>
