@@ -1612,34 +1612,36 @@
                     if (!importedData.studentsList || !importedData.studentsData) {
                         throw new Error('Ongeldig bestandsformaat');
                     }
-                    
-                    const currentStudents = await getStudentsList();
+
+                    // Laad de volledige bin één keer
+                    const bin = await loadBin();
+                    const currentStudents = bin.studentsList || [];
+
                     let addedCount = 0;
                     let skippedCount = 0;
                     let updatedCount = 0;
-                    
+
                     for (const student of importedData.studentsList) {
-                        if (currentStudents.length + addedCount >= MAX_STUDENTS) {
-                            skippedCount++;
-                            continue;
-                        }
-                        
+                        // Verwijder dubbelen: als de leerling al bestaat, update alleen de data
                         if (currentStudents.includes(student)) {
-                            await saveStudentData(student, importedData.studentsData[student]);
+                            bin[`student_${student}`] = importedData.studentsData[student] || {};
                             updatedCount++;
-                        } else {
+                        } else if (currentStudents.length < MAX_STUDENTS) {
                             currentStudents.push(student);
-                            await saveStudentData(student, importedData.studentsData[student]);
+                            bin[`student_${student}`] = importedData.studentsData[student] || {};
                             addedCount++;
+                        } else {
+                            skippedCount++;
                         }
                     }
-                    
-                    if (addedCount > 0 || updatedCount > 0) {
-                        currentStudents.sort();
-                        await saveStudentsList(currentStudents);
-                        await updateStudentSelector();
-                    }
-                    
+
+                    // Sla alles in één keer op
+                    currentStudents.sort();
+                    bin.studentsList = currentStudents;
+                    _binCache = bin;
+                    await saveBin(bin);
+                    await updateStudentSelector();
+
                     let message = 'Import voltooid!\n\n';
                     if (addedCount > 0) message += `✓ ${addedCount} nieuwe leerling(en) toegevoegd\n`;
                     if (updatedCount > 0) message += `✓ ${updatedCount} leerling(en) bijgewerkt\n`;
