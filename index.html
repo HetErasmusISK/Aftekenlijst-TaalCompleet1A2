@@ -672,8 +672,8 @@
         </div>
         
         <div class="footer">
-            <p>💡 Je kunt maximaal 20 leerlingen toevoegen • Voortgang wordt automatisch opgeslagen in je browser</p>
-            <p>Voor gebruik op Teams: deel dit HTML-bestand en elke docent kan onafhankelijk voortgang bijhouden</p>
+            <p>💡 Je kunt maximaal 20 leerlingen toevoegen • <span id="syncStatus" style="display:none; font-weight:600;"></span></p>
+            <p>Voortgang wordt opgeslagen in JSONBin – beschikbaar op elk apparaat</p>
         </div>
     </div>
     
@@ -684,6 +684,63 @@
     <input type="file" id="importGroupFile" style="display: none;" accept=".json">
     
     <script>
+        // ===== JSONBIN CONFIGURATIE =====
+        const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
+        const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+        // Lokale cache zodat we niet bij elke actie de API aanroepen
+        let _binCache = null;
+
+        async function loadBin() {
+            if (_binCache) return _binCache;
+            try {
+                showSyncStatus('🔄 Laden...');
+                const res = await fetch(JSONBIN_URL + '/latest', {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                const json = await res.json();
+                _binCache = json.record || {};
+                hideSyncStatus();
+                return _binCache;
+            } catch (e) {
+                showSyncStatus('⚠️ Geen verbinding – lokale modus', true);
+                return {};
+            }
+        }
+
+        async function saveBin(data) {
+            _binCache = data;
+            try {
+                showSyncStatus('💾 Opslaan...');
+                await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(data)
+                });
+                showSyncStatus('✅ Opgeslagen!');
+                setTimeout(hideSyncStatus, 2000);
+            } catch (e) {
+                showSyncStatus('⚠️ Opslaan mislukt!', true);
+            }
+        }
+
+        function showSyncStatus(msg, isError = false) {
+            let el = document.getElementById('syncStatus');
+            if (!el) return;
+            el.textContent = msg;
+            el.style.color = isError ? '#dc3545' : '#28a745';
+            el.style.display = 'inline';
+        }
+        function hideSyncStatus() {
+            const el = document.getElementById('syncStatus');
+            if (el) el.style.display = 'none';
+        }
+
+        // ===== WACHTWOORD =====
         const CORRECT_PASSWORD = 'ISK2026!';
         
         function checkPassword(event) {
@@ -904,16 +961,18 @@
             return `${day}-${month}-${year}`;
         }
         
-        function getStudentsList() {
-            const stored = localStorage.getItem('studentsList');
-            return stored ? JSON.parse(stored) : [];
+        async function getStudentsList() {
+            const bin = await loadBin();
+            return bin.studentsList || [];
         }
         
-        function saveStudentsList(students) {
-            localStorage.setItem('studentsList', JSON.stringify(students));
+        async function saveStudentsList(students) {
+            const bin = await loadBin();
+            bin.studentsList = students;
+            await saveBin(bin);
         }
         
-        function addStudent() {
+        async function addStudent() {
             const input = document.getElementById('newStudentName');
             const name = input.value.trim();
             
@@ -922,7 +981,7 @@
                 return;
             }
             
-            const students = getStudentsList();
+            const students = await getStudentsList();
             
             if (students.length >= MAX_STUDENTS) {
                 alert(`Je kunt maximaal ${MAX_STUDENTS} leerlingen toevoegen!`);
@@ -936,48 +995,50 @@
             
             students.push(name);
             students.sort();
-            saveStudentsList(students);
+            await saveStudentsList(students);
             
             input.value = '';
-            updateStudentSelector();
+            await updateStudentSelector();
             
             // Selecteer de nieuwe leerling automatisch
             document.getElementById('studentSelect').value = name;
             currentStudent = name;
-            renderStudentProgress();
+            await renderStudentProgress();
             
             alert(`Leerling "${name}" succesvol toegevoegd!`);
         }
         
-        function deleteStudent() {
+        async function deleteStudent() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling om te verwijderen!');
                 return;
             }
             
             if (confirm(`Weet je zeker dat je "${currentStudent}" wilt verwijderen?\n\nDit verwijdert ook alle voortgang van deze leerling!`)) {
-                const students = getStudentsList();
+                const students = await getStudentsList();
                 const index = students.indexOf(currentStudent);
                 
                 if (index > -1) {
                     students.splice(index, 1);
-                    saveStudentsList(students);
+                    await saveStudentsList(students);
                 }
                 
                 // Verwijder ook de data van deze leerling
-                localStorage.removeItem(`student_${currentStudent}`);
+                const bin = await loadBin();
+                delete bin[`student_${currentStudent}`];
+                await saveBin(bin);
                 
                 currentStudent = '';
-                updateStudentSelector();
+                await updateStudentSelector();
                 showWelcomeMessage();
                 
                 alert('Leerling succesvol verwijderd!');
             }
         }
         
-        function updateStudentSelector() {
+        async function updateStudentSelector() {
             const select = document.getElementById('studentSelect');
-            const students = getStudentsList();
+            const students = await getStudentsList();
             const currentValue = select.value;
             
             // Bewaar huidige selectie
@@ -996,30 +1057,29 @@
             }
             
             // Update student count display
-            updateStudentCount();
+            updateStudentCount(students);
         }
         
-        function updateStudentCount() {
-            const students = getStudentsList();
-            const count = students.length;
+        function updateStudentCount(students) {
+            const count = students ? students.length : 0;
             const remaining = MAX_STUDENTS - count;
             
             // Je kunt hier eventueel een teller tonen
             console.log(`${count} leerlingen, ${remaining} plekken beschikbaar`);
         }
         
-        function initStudents() {
+        async function initStudents() {
             const select = document.getElementById('studentSelect');
             
             // Laad bestaande leerlingen
-            updateStudentSelector();
+            await updateStudentSelector();
             
-            select.addEventListener('change', function() {
+            select.addEventListener('change', async function() {
                 currentStudent = this.value;
                 if (currentStudent) {
-                    renderStudentProgress();
+                    await renderStudentProgress();
                 } else {
-                    showWelcomeMessage();
+                    await showWelcomeMessage();
                 }
             });
             
@@ -1031,8 +1091,8 @@
             });
         }
         
-        function showWelcomeMessage() {
-            const students = getStudentsList();
+        async function showWelcomeMessage() {
+            const students = await getStudentsList();
             const count = students.length;
             const remaining = MAX_STUDENTS - count;
             
@@ -1060,13 +1120,18 @@
             `;
         }
         
-        function getStudentData(student) {
-            const key = `student_${student}`;
-            const data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : {};
+        async function getStudentData(student) {
+            const bin = await loadBin();
+            return bin[`student_${student}`] || {};
         }
         
-        function getLastCompletedLesson(studentData) {
+        async function saveStudentData(student, data) {
+            const bin = await loadBin();
+            bin[`student_${student}`] = data;
+            await saveBin(bin);
+        }
+        
+        async function getLastCompletedLesson(studentData) {
             let lastCompleted = null;
             let lastTimestamp = 0;
             
@@ -1086,15 +1151,12 @@
             return lastCompleted;
         }
         
-        function saveStudentData(student, data) {
-            const key = `student_${student}`;
-            localStorage.setItem(key, JSON.stringify(data));
-        }
+
         
-        function updateCheckbox(themeIndex, lessonIndex, type) {
+        async function updateCheckbox(themeIndex, lessonIndex, type) {
             const checkboxId = `${currentStudent}_${themeIndex}_${lessonIndex}_${type}`;
             const checkbox = document.getElementById(checkboxId);
-            const data = getStudentData(currentStudent);
+            const data = await getStudentData(currentStudent);
             
             if (!data[themeIndex]) data[themeIndex] = {};
             if (!data[themeIndex][lessonIndex]) data[themeIndex][lessonIndex] = {};
@@ -1114,15 +1176,15 @@
                 delete data[themeIndex][lessonIndex].completedDate;
             }
             
-            saveStudentData(currentStudent, data);
+            await saveStudentData(currentStudent, data);
             
             // Herlaad de weergave om de sorteerorde bij te werken
-            renderStudentProgress();
-            updateProgressSummary();
+            await renderStudentProgress();
+            await updateProgressSummary();
         }
         
-        function calculateProgress() {
-            const data = getStudentData(currentStudent);
+        async function calculateProgress() {
+            const data = await getStudentData(currentStudent);
             let totalLessons = 0;
             let bookCompleted = 0;
             let onlineCompleted = 0;
@@ -1147,8 +1209,8 @@
             };
         }
         
-        function updateProgressSummary() {
-            const progress = calculateProgress();
+        async function updateProgressSummary() {
+            const progress = await calculateProgress();
             const summaryDiv = document.querySelector('.progress-summary');
             if (summaryDiv) {
                 summaryDiv.innerHTML = `
@@ -1202,9 +1264,9 @@
             }
         }
         
-        function renderStudentProgress() {
-            const data = getStudentData(currentStudent);
-            const progress = calculateProgress();
+        async function renderStudentProgress() {
+            const data = await getStudentData(currentStudent);
+            const progress = await calculateProgress();
             const todayDate = getTodayDate();
             
             let activeThemesHtml = '';
@@ -1452,16 +1514,16 @@
             `;
             
             document.getElementById('content').innerHTML = html;
-            updateProgressSummary();
+            await updateProgressSummary();
         }
         
-        function exportData() {
+        async function exportData() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling!');
                 return;
             }
             
-            const data = getStudentData(currentStudent);
+            const data = await getStudentData(currentStudent);
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1471,8 +1533,8 @@
             URL.revokeObjectURL(url);
         }
         
-        function exportAllStudents() {
-            const students = getStudentsList();
+        async function exportAllStudents() {
+            const students = await getStudentsList();
             
             if (students.length === 0) {
                 alert('Er zijn nog geen leerlingen om te exporteren!');
@@ -1485,9 +1547,9 @@
                 studentsData: {}
             };
             
-            students.forEach(student => {
-                allData.studentsData[student] = getStudentData(student);
-            });
+            for (const student of students) {
+                allData.studentsData[student] = await getStudentData(student);
+            }
             
             const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1523,11 +1585,11 @@
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    saveStudentData(currentStudent, data);
-                    renderStudentProgress();
+                    await saveStudentData(currentStudent, data);
+                    await renderStudentProgress();
                     alert('Data succesvol geïmporteerd!');
                 } catch (err) {
                     alert('Fout bij het importeren van data: ' + err.message);
@@ -1543,7 +1605,7 @@
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
                     
@@ -1551,34 +1613,31 @@
                         throw new Error('Ongeldig bestandsformaat');
                     }
                     
-                    const currentStudents = getStudentsList();
+                    const currentStudents = await getStudentsList();
                     let addedCount = 0;
                     let skippedCount = 0;
                     let updatedCount = 0;
                     
-                    importedData.studentsList.forEach(student => {
-                        // Check of we het maximum niet overschrijden
+                    for (const student of importedData.studentsList) {
                         if (currentStudents.length + addedCount >= MAX_STUDENTS) {
                             skippedCount++;
-                            return;
+                            continue;
                         }
                         
                         if (currentStudents.includes(student)) {
-                            // Leerling bestaat al - update de data
-                            saveStudentData(student, importedData.studentsData[student]);
+                            await saveStudentData(student, importedData.studentsData[student]);
                             updatedCount++;
                         } else {
-                            // Nieuwe leerling - voeg toe
                             currentStudents.push(student);
-                            saveStudentData(student, importedData.studentsData[student]);
+                            await saveStudentData(student, importedData.studentsData[student]);
                             addedCount++;
                         }
-                    });
+                    }
                     
                     if (addedCount > 0 || updatedCount > 0) {
                         currentStudents.sort();
-                        saveStudentsList(currentStudents);
-                        updateStudentSelector();
+                        await saveStudentsList(currentStudents);
+                        await updateStudentSelector();
                     }
                     
                     let message = 'Import voltooid!\n\n';
@@ -1589,7 +1648,7 @@
                     alert(message);
                     
                     if (currentStudent) {
-                        renderStudentProgress();
+                        await renderStudentProgress();
                     }
                 } catch (err) {
                     alert('Fout bij het importeren: ' + err.message);
@@ -1600,15 +1659,15 @@
             this.value = '';
         });
         
-        function resetStudent() {
+        async function resetStudent() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling!');
                 return;
             }
             
             if (confirm(`Weet je zeker dat je alle voortgang van ${currentStudent} wilt verwijderen?`)) {
-                saveStudentData(currentStudent, {});
-                renderStudentProgress();
+                await saveStudentData(currentStudent, {});
+                await renderStudentProgress();
                 alert('Voortgang is gereset!');
             }
         }
