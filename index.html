@@ -339,24 +339,6 @@
             margin-left: 5px;
         }
         
-        .btn-undo {
-            margin-top: 8px;
-            padding: 4px 10px;
-            background: none;
-            border: 1px solid #adb5bd;
-            border-radius: 6px;
-            color: #6c757d;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-undo:hover {
-            background: #fff3cd;
-            border-color: #ffc107;
-            color: #856404;
-        }
-        
         .no-completed {
             color: #6c757d;
             font-style: italic;
@@ -659,6 +641,78 @@
                         <option value="">-- Kies een leerling --</option>
                     </select>
                 </div>
+                <div class="button-group">
+                    <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
+                    <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="add-student-form">
+                    <input type="text" id="newStudentName" placeholder="Naam nieuwe leerling..." maxlength="50">
+                    <button class="btn btn-success" onclick="addStudent()">➕ Voeg Leerling Toe</button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="exportData()">💾 Exporteer Leerling</button>
+                    <button class="btn btn-secondary" onclick="importData()">📥 Importeer Leerling</button>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="button-group" style="flex: 1;">
+                    <button class="btn btn-primary" onclick="exportAllStudents()">📦 Exporteer Alle Leerlingen</button>
+                    <button class="btn btn-secondary" onclick="importAllStudents()">📥 Importeer Groep</button>
+                    <button class="btn btn-secondary" onclick="showSettings()">⚙️ JSONBin</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- JSONBin Instellingen Modal -->
+        <div id="settingsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">☁️ Cloud Opslag Status</h2>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #495057;">
+                            API Key:
+                        </label>
+                        <input 
+                            type="password" 
+                            id="apiKeyInput" 
+                            placeholder="Geconfigureerd" 
+                            style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px; font-family: monospace; font-size: 0.9em; background: #f8f9fa;"
+                            readonly
+                        >
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #495057;">
+                            Bin ID:
+                        </label>
+                        <input 
+                            type="text" 
+                            id="binIdInput" 
+                            style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px; font-family: monospace; font-size: 0.9em; background: #f8f9fa;"
+                            readonly
+                        >
+                    </div>
+                    
+                    <div id="connectionStatus" style="margin-bottom: 20px; padding: 15px; border-radius: 8px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 20px; padding: 15px; background: #e7f3ff; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong style="color: #667eea; display: block; margin-bottom: 10px;">💡 Hoe werkt het?</strong>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: #495057;">
+                            <li>Alle wijzigingen worden automatisch opgeslagen naar de cloud</li>
+                            <li>Bij opstarten wordt de laatste versie geladen</li>
+                            <li>Lokale + cloud data worden samengevoegd</li>
+                            <li>Deel dit bestand met collega's - iedereen werkt in dezelfde database</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button class="btn btn-primary" onclick="closeSettings()">Sluiten</button>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -670,22 +724,8 @@
         </div>
         
         <div class="footer">
-            <p>💡 Je kunt maximaal 20 leerlingen toevoegen • <span id="syncStatus" style="display:none; font-weight:600;"></span></p>
-            <p>Voortgang wordt opgeslagen in JSONBin – beschikbaar op elk apparaat</p>
-            <div class="control-row" style="margin-top: 15px; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                <div class="add-student-form">
-                    <input type="text" id="newStudentName" placeholder="Naam nieuwe leerling..." maxlength="50">
-                    <button class="btn btn-success" onclick="addStudent()">➕ Voeg Leerling Toe</button>
-                </div>
-            </div>
-            <div class="control-row" style="margin-top: 10px; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
-                <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
-                <button class="btn btn-primary" onclick="exportData()">💾 Exporteer Leerling</button>
-                <button class="btn btn-secondary" onclick="importData()">📥 Importeer Leerling</button>
-                <button class="btn btn-primary" onclick="exportAllStudents()">📦 Exporteer Alle Leerlingen</button>
-                <button class="btn btn-secondary" onclick="importAllStudents()">📥 Importeer Groep</button>
-            </div>
+            <p>☁️ Cloud opslag actief via JSONBin.io • Alle wijzigingen worden automatisch gesynchroniseerd</p>
+            <p>💡 Deel dit bestand met collega's om samen in dezelfde database te werken</p>
         </div>
     </div>
     
@@ -696,63 +736,6 @@
     <input type="file" id="importGroupFile" style="display: none;" accept=".json">
     
     <script>
-        // ===== JSONBIN CONFIGURATIE =====
-        const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
-        const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
-        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-
-        // Lokale cache zodat we niet bij elke actie de API aanroepen
-        let _binCache = null;
-
-        async function loadBin() {
-            if (_binCache) return _binCache;
-            try {
-                showSyncStatus('🔄 Laden...');
-                const res = await fetch(JSONBIN_URL + '/latest', {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                const json = await res.json();
-                _binCache = json.record || {};
-                hideSyncStatus();
-                return _binCache;
-            } catch (e) {
-                showSyncStatus('⚠️ Geen verbinding – lokale modus', true);
-                return {};
-            }
-        }
-
-        async function saveBin(data) {
-            _binCache = data;
-            try {
-                showSyncStatus('💾 Opslaan...');
-                await fetch(JSONBIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(data)
-                });
-                showSyncStatus('✅ Opgeslagen!');
-                setTimeout(hideSyncStatus, 2000);
-            } catch (e) {
-                showSyncStatus('⚠️ Opslaan mislukt!', true);
-            }
-        }
-
-        function showSyncStatus(msg, isError = false) {
-            let el = document.getElementById('syncStatus');
-            if (!el) return;
-            el.textContent = msg;
-            el.style.color = isError ? '#dc3545' : '#28a745';
-            el.style.display = 'inline';
-        }
-        function hideSyncStatus() {
-            const el = document.getElementById('syncStatus');
-            if (el) el.style.display = 'none';
-        }
-
-        // ===== WACHTWOORD =====
         const CORRECT_PASSWORD = 'ISK2026!';
         
         function checkPassword(event) {
@@ -789,6 +772,136 @@
         });
         
         const MAX_STUDENTS = 20;
+        
+        // ===== JSONBIN.IO CONFIGURATIE (HARDCODED) =====
+        const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
+        const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
+        const JSONBIN_API_URL = 'https://api.jsonbin.io/v3';
+        
+        // Sync status indicator
+        let isSyncing = false;
+        
+        // Toon instellingen modal (nu alleen informatief)
+        function showSettings() {
+            const modal = document.getElementById('settingsModal');
+            const statusDiv = document.getElementById('connectionStatus');
+            
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#d4edda';
+            statusDiv.style.color = '#155724';
+            statusDiv.innerHTML = `
+                <strong>✅ Cloud Opslag Actief</strong><br>
+                <small style="margin-top: 5px; display: block;">Bin ID: ${JSONBIN_BIN_ID}</small>
+                <small>Al je wijzigingen worden automatisch opgeslagen naar de cloud.</small>
+            `;
+            
+            document.getElementById('apiKeyInput').value = '••••••••••••••••••••••••••';
+            document.getElementById('apiKeyInput').disabled = true;
+            document.getElementById('binIdInput').value = JSONBIN_BIN_ID;
+            document.getElementById('binIdInput').disabled = true;
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Sluit instellingen modal
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+        
+        // Bewaar instellingen (nu alleen sluiten)
+        function saveSettings() {
+            closeSettings();
+        }
+        
+        // Laad data van JSONBin en merge met lokale data
+        async function loadFromJSONBin(cloudData) {
+            if (!cloudData) return;
+            
+            // Laad leerlingen lijst
+            if (cloudData.studentsList) {
+                const localStudents = getStudentsList();
+                const mergedStudents = [...new Set([...localStudents, ...cloudData.studentsList])];
+                mergedStudents.sort();
+                localStorage.setItem('studentsList', JSON.stringify(mergedStudents));
+            }
+            
+            // Laad leerling data
+            if (cloudData.studentsData) {
+                Object.keys(cloudData.studentsData).forEach(student => {
+                    const key = `student_${student}`;
+                    localStorage.setItem(key, JSON.stringify(cloudData.studentsData[student]));
+                });
+            }
+        }
+        
+        // Opslaan naar JSONBin
+        async function saveToJSONBin() {
+            if (isSyncing) return; // Voorkom dubbele saves
+            isSyncing = true;
+            
+            const students = getStudentsList();
+            const allData = {
+                aftekenlijst: "TaalCompleet A1",
+                lastUpdated: new Date().toISOString(),
+                studentsList: students,
+                studentsData: {}
+            };
+            
+            students.forEach(student => {
+                allData.studentsData[student] = getStudentData(student);
+            });
+            
+            try {
+                // Update de bin
+                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(allData)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Opgeslagen naar cloud');
+                } else {
+                    console.error('❌ Cloud opslag mislukt');
+                }
+            } catch (error) {
+                console.error('JSONBin sync error:', error);
+            } finally {
+                isSyncing = false;
+            }
+        }
+        
+        // Laad van JSONBin bij opstarten
+        async function loadFromJSONBinOnStart() {
+            try {
+                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    await loadFromJSONBin(data.record);
+                    updateStudentSelector();
+                    console.log('✅ Data geladen van cloud');
+                } else {
+                    console.log('⚠️ Kon niet laden van cloud, gebruik lokale data');
+                }
+            } catch (error) {
+                console.error('Kon niet laden van JSONBin:', error);
+            }
+        }
+        
+        // Start automatisch laden bij inloggen
+        window.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                loadFromJSONBinOnStart();
+            }
+        });
         
         const themes = [
             {
@@ -973,18 +1086,19 @@
             return `${day}-${month}-${year}`;
         }
         
-        async function getStudentsList() {
-            const bin = await loadBin();
-            return bin.studentsList || [];
+        function getStudentsList() {
+            const stored = localStorage.getItem('studentsList');
+            return stored ? JSON.parse(stored) : [];
         }
         
-        async function saveStudentsList(students) {
-            const bin = await loadBin();
-            bin.studentsList = students;
-            await saveBin(bin);
+        function saveStudentsList(students) {
+            localStorage.setItem('studentsList', JSON.stringify(students));
+            
+            // Ook opslaan naar JSONBin (als geconfigureerd)
+            saveToJSONBin();
         }
         
-        async function addStudent() {
+        function addStudent() {
             const input = document.getElementById('newStudentName');
             const name = input.value.trim();
             
@@ -993,7 +1107,7 @@
                 return;
             }
             
-            const students = await getStudentsList();
+            const students = getStudentsList();
             
             if (students.length >= MAX_STUDENTS) {
                 alert(`Je kunt maximaal ${MAX_STUDENTS} leerlingen toevoegen!`);
@@ -1007,50 +1121,48 @@
             
             students.push(name);
             students.sort();
-            await saveStudentsList(students);
+            saveStudentsList(students);
             
             input.value = '';
-            await updateStudentSelector();
+            updateStudentSelector();
             
             // Selecteer de nieuwe leerling automatisch
             document.getElementById('studentSelect').value = name;
             currentStudent = name;
-            await renderStudentProgress();
+            renderStudentProgress();
             
             alert(`Leerling "${name}" succesvol toegevoegd!`);
         }
         
-        async function deleteStudent() {
+        function deleteStudent() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling om te verwijderen!');
                 return;
             }
             
             if (confirm(`Weet je zeker dat je "${currentStudent}" wilt verwijderen?\n\nDit verwijdert ook alle voortgang van deze leerling!`)) {
-                const students = await getStudentsList();
+                const students = getStudentsList();
                 const index = students.indexOf(currentStudent);
                 
                 if (index > -1) {
                     students.splice(index, 1);
-                    await saveStudentsList(students);
+                    saveStudentsList(students);
                 }
                 
                 // Verwijder ook de data van deze leerling
-                const bin = await loadBin();
-                delete bin[`student_${currentStudent}`];
-                await saveBin(bin);
+                localStorage.removeItem(`student_${currentStudent}`);
                 
                 currentStudent = '';
-                await updateStudentSelector();
+                updateStudentSelector();
                 showWelcomeMessage();
                 
                 alert('Leerling succesvol verwijderd!');
             }
         }
         
-        async function updateStudentSelector() {
+        function updateStudentSelector() {
             const select = document.getElementById('studentSelect');
-            const students = await getStudentsList();
+            const students = getStudentsList();
             const currentValue = select.value;
             
             // Bewaar huidige selectie
@@ -1069,29 +1181,30 @@
             }
             
             // Update student count display
-            updateStudentCount(students);
+            updateStudentCount();
         }
         
-        function updateStudentCount(students) {
-            const count = students ? students.length : 0;
+        function updateStudentCount() {
+            const students = getStudentsList();
+            const count = students.length;
             const remaining = MAX_STUDENTS - count;
             
             // Je kunt hier eventueel een teller tonen
             console.log(`${count} leerlingen, ${remaining} plekken beschikbaar`);
         }
         
-        async function initStudents() {
+        function initStudents() {
             const select = document.getElementById('studentSelect');
             
             // Laad bestaande leerlingen
-            await updateStudentSelector();
+            updateStudentSelector();
             
-            select.addEventListener('change', async function() {
+            select.addEventListener('change', function() {
                 currentStudent = this.value;
                 if (currentStudent) {
-                    await renderStudentProgress();
+                    renderStudentProgress();
                 } else {
-                    await showWelcomeMessage();
+                    showWelcomeMessage();
                 }
             });
             
@@ -1103,8 +1216,8 @@
             });
         }
         
-        async function showWelcomeMessage() {
-            const students = await getStudentsList();
+        function showWelcomeMessage() {
+            const students = getStudentsList();
             const count = students.length;
             const remaining = MAX_STUDENTS - count;
             
@@ -1132,18 +1245,13 @@
             `;
         }
         
-        async function getStudentData(student) {
-            const bin = await loadBin();
-            return bin[`student_${student}`] || {};
+        function getStudentData(student) {
+            const key = `student_${student}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : {};
         }
         
-        async function saveStudentData(student, data) {
-            const bin = await loadBin();
-            bin[`student_${student}`] = data;
-            await saveBin(bin);
-        }
-        
-        async function getLastCompletedLesson(studentData) {
+        function getLastCompletedLesson(studentData) {
             let lastCompleted = null;
             let lastTimestamp = 0;
             
@@ -1163,12 +1271,18 @@
             return lastCompleted;
         }
         
-
+        function saveStudentData(student, data) {
+            const key = `student_${student}`;
+            localStorage.setItem(key, JSON.stringify(data));
+            
+            // Ook opslaan naar JSONBin (als geconfigureerd)
+            saveToJSONBin();
+        }
         
-        async function updateCheckbox(themeIndex, lessonIndex, type) {
+        function updateCheckbox(themeIndex, lessonIndex, type) {
             const checkboxId = `${currentStudent}_${themeIndex}_${lessonIndex}_${type}`;
             const checkbox = document.getElementById(checkboxId);
-            const data = await getStudentData(currentStudent);
+            const data = getStudentData(currentStudent);
             
             if (!data[themeIndex]) data[themeIndex] = {};
             if (!data[themeIndex][lessonIndex]) data[themeIndex][lessonIndex] = {};
@@ -1188,15 +1302,15 @@
                 delete data[themeIndex][lessonIndex].completedDate;
             }
             
-            await saveStudentData(currentStudent, data);
+            saveStudentData(currentStudent, data);
             
             // Herlaad de weergave om de sorteerorde bij te werken
-            await renderStudentProgress();
-            await updateProgressSummary();
+            renderStudentProgress();
+            updateProgressSummary();
         }
         
-        async function calculateProgress() {
-            const data = await getStudentData(currentStudent);
+        function calculateProgress() {
+            const data = getStudentData(currentStudent);
             let totalLessons = 0;
             let bookCompleted = 0;
             let onlineCompleted = 0;
@@ -1221,8 +1335,8 @@
             };
         }
         
-        async function updateProgressSummary() {
-            const progress = await calculateProgress();
+        function updateProgressSummary() {
+            const progress = calculateProgress();
             const summaryDiv = document.querySelector('.progress-summary');
             if (summaryDiv) {
                 summaryDiv.innerHTML = `
@@ -1276,9 +1390,9 @@
             }
         }
         
-        async function renderStudentProgress() {
-            const data = await getStudentData(currentStudent);
-            const progress = await calculateProgress();
+        function renderStudentProgress() {
+            const data = getStudentData(currentStudent);
+            const progress = calculateProgress();
             const todayDate = getTodayDate();
             
             let activeThemesHtml = '';
@@ -1329,15 +1443,10 @@
             });
             
             // Render actieve thema's
-            activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }, activeIndex) => {
+            activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }) => {
                 const themeBookPercentage = Math.round((themeBookCompleted / themeLessons) * 100);
                 const themeOnlinePercentage = Math.round((themeOnlineCompleted / themeLessons) * 100);
                 const themeTotalPercentage = Math.round(((themeBookCompleted + themeOnlineCompleted) / (themeLessons * 2)) * 100);
-                
-                // Alleen het eerste actieve thema is open, de rest dicht
-                const isOpen = activeIndex === 0;
-                const collapsedClass = isOpen ? '' : 'collapsed';
-                const collapsedHeader = isOpen ? '' : 'collapsed';
                 
                 // Verdeel lessen in afgerond en niet-afgerond
                 const completedLessons = [];
@@ -1369,7 +1478,7 @@
                 activeThemesHtml += `
                     <div class="theme-container">
                         <div class="theme-section">
-                            <div class="theme-header ${collapsedHeader}" id="theme-header-${themeIdx}" onclick="toggleTheme(${themeIdx})">
+                            <div class="theme-header" id="theme-header-${themeIdx}" onclick="toggleTheme(${themeIdx})">
                                 <div style="flex: 1;">
                                     <div>${theme.name}</div>
                                     <div style="font-size: 0.85em; opacity: 0.9; margin-top: 5px; display: flex; gap: 15px; align-items: center;">
@@ -1380,7 +1489,7 @@
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
-                            <div class="theme-content ${collapsedClass}" id="theme-content-${themeIdx}">
+                            <div class="theme-content" id="theme-content-${themeIdx}">
                                 <table class="lessons-table">
                                     <thead>
                                         <tr>
@@ -1481,7 +1590,6 @@
                                 <div class="completed-item-number">${lessonData.lesson.number}${badge}</div>
                                 <div class="completed-item-title">${lessonData.lesson.title}</div>
                                 <div class="completed-item-date">📅 ${displayDate}</div>
-                                <button class="btn-undo" onclick="undoLesson(${themeIdx}, ${lessonData.lessonIdx})">↩️ Ongedaan maken</button>
                             </div>
                         `;
                     });
@@ -1532,16 +1640,16 @@
             `;
             
             document.getElementById('content').innerHTML = html;
-            await updateProgressSummary();
+            updateProgressSummary();
         }
         
-        async function exportData() {
+        function exportData() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling!');
                 return;
             }
             
-            const data = await getStudentData(currentStudent);
+            const data = getStudentData(currentStudent);
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1551,8 +1659,8 @@
             URL.revokeObjectURL(url);
         }
         
-        async function exportAllStudents() {
-            const students = await getStudentsList();
+        function exportAllStudents() {
+            const students = getStudentsList();
             
             if (students.length === 0) {
                 alert('Er zijn nog geen leerlingen om te exporteren!');
@@ -1565,9 +1673,9 @@
                 studentsData: {}
             };
             
-            for (const student of students) {
-                allData.studentsData[student] = await getStudentData(student);
-            }
+            students.forEach(student => {
+                allData.studentsData[student] = getStudentData(student);
+            });
             
             const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1603,11 +1711,11 @@
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    await saveStudentData(currentStudent, data);
-                    await renderStudentProgress();
+                    saveStudentData(currentStudent, data);
+                    renderStudentProgress();
                     alert('Data succesvol geïmporteerd!');
                 } catch (err) {
                     alert('Fout bij het importeren van data: ' + err.message);
@@ -1623,43 +1731,44 @@
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
                     
                     if (!importedData.studentsList || !importedData.studentsData) {
                         throw new Error('Ongeldig bestandsformaat');
                     }
-
-                    // Laad de volledige bin één keer
-                    const bin = await loadBin();
-                    const currentStudents = bin.studentsList || [];
-
+                    
+                    const currentStudents = getStudentsList();
                     let addedCount = 0;
                     let skippedCount = 0;
                     let updatedCount = 0;
-
-                    for (const student of importedData.studentsList) {
-                        // Verwijder dubbelen: als de leerling al bestaat, update alleen de data
-                        if (currentStudents.includes(student)) {
-                            bin[`student_${student}`] = importedData.studentsData[student] || {};
-                            updatedCount++;
-                        } else if (currentStudents.length < MAX_STUDENTS) {
-                            currentStudents.push(student);
-                            bin[`student_${student}`] = importedData.studentsData[student] || {};
-                            addedCount++;
-                        } else {
+                    
+                    importedData.studentsList.forEach(student => {
+                        // Check of we het maximum niet overschrijden
+                        if (currentStudents.length + addedCount >= MAX_STUDENTS) {
                             skippedCount++;
+                            return;
                         }
+                        
+                        if (currentStudents.includes(student)) {
+                            // Leerling bestaat al - update de data
+                            saveStudentData(student, importedData.studentsData[student]);
+                            updatedCount++;
+                        } else {
+                            // Nieuwe leerling - voeg toe
+                            currentStudents.push(student);
+                            saveStudentData(student, importedData.studentsData[student]);
+                            addedCount++;
+                        }
+                    });
+                    
+                    if (addedCount > 0 || updatedCount > 0) {
+                        currentStudents.sort();
+                        saveStudentsList(currentStudents);
+                        updateStudentSelector();
                     }
-
-                    // Sla alles in één keer op
-                    currentStudents.sort();
-                    bin.studentsList = currentStudents;
-                    _binCache = bin;
-                    await saveBin(bin);
-                    await updateStudentSelector();
-
+                    
                     let message = 'Import voltooid!\n\n';
                     if (addedCount > 0) message += `✓ ${addedCount} nieuwe leerling(en) toegevoegd\n`;
                     if (updatedCount > 0) message += `✓ ${updatedCount} leerling(en) bijgewerkt\n`;
@@ -1668,7 +1777,7 @@
                     alert(message);
                     
                     if (currentStudent) {
-                        await renderStudentProgress();
+                        renderStudentProgress();
                     }
                 } catch (err) {
                     alert('Fout bij het importeren: ' + err.message);
@@ -1679,31 +1788,19 @@
             this.value = '';
         });
         
-        async function resetStudent() {
+        function resetStudent() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling!');
                 return;
             }
             
             if (confirm(`Weet je zeker dat je alle voortgang van ${currentStudent} wilt verwijderen?`)) {
-                await saveStudentData(currentStudent, {});
-                await renderStudentProgress();
+                saveStudentData(currentStudent, {});
+                renderStudentProgress();
                 alert('Voortgang is gereset!');
             }
         }
         
-        async function undoLesson(themeIndex, lessonIndex) {
-            const data = await getStudentData(currentStudent);
-            if (data[themeIndex] && data[themeIndex][lessonIndex]) {
-                data[themeIndex][lessonIndex].book = false;
-                data[themeIndex][lessonIndex].online = false;
-                delete data[themeIndex][lessonIndex].timestamp;
-                delete data[themeIndex][lessonIndex].completedDate;
-            }
-            await saveStudentData(currentStudent, data);
-            await renderStudentProgress();
-        }
-
         initStudents();
     </script>
 </body>
