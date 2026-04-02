@@ -310,6 +310,19 @@
             border-left-width: 6px;
         }
         
+        .completed-lesson {
+            background: #f0f9f4 !important;
+        }
+        
+        .completed-lesson.latest {
+            background: #d4edda !important;
+            font-weight: 500;
+        }
+        
+        .completed-lesson:hover {
+            background: #e8f5ee !important;
+        }
+        
         .completed-item-number {
             font-weight: 600;
             color: #667eea;
@@ -599,34 +612,10 @@
     </style>
 </head>
 <body>
-    <div id="loginScreen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
-            <h1 style="color: #667eea; margin-bottom: 10px; text-align: center; font-size: 2em;">🔒 Aftekenlijst A1</h1>
-            <p style="color: #6c757d; text-align: center; margin-bottom: 30px;">Voer het wachtwoord in om toegang te krijgen</p>
-            <form onsubmit="checkPassword(event)" style="display: flex; flex-direction: column; gap: 15px;">
-                <input 
-                    type="password" 
-                    id="passwordInput" 
-                    placeholder="Wachtwoord" 
-                    style="padding: 15px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; width: 100%;"
-                    autofocus
-                >
-                <button 
-                    type="submit" 
-                    style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.3s;"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.3)'"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-                >
-                    🔓 Inloggen
-                </button>
-                <div id="errorMessage" style="color: #dc3545; text-align: center; font-size: 0.9em; display: none; margin-top: 5px;">
-                    ❌ Onjuist wachtwoord. Probeer opnieuw.
-                </div>
-            </form>
-        </div>
+    <div id="loginScreen" style="display: none;">
     </div>
     
-    <div id="mainContent" style="display: none;">
+    <div id="mainContent">
     <div class="container">
         <div class="header">
             <h1>📚 Aftekenlijst Taalcompleet A1</h1>
@@ -641,78 +630,6 @@
                         <option value="">-- Kies een leerling --</option>
                     </select>
                 </div>
-                <div class="button-group">
-                    <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
-                    <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
-                </div>
-            </div>
-            <div class="control-row">
-                <div class="add-student-form">
-                    <input type="text" id="newStudentName" placeholder="Naam nieuwe leerling..." maxlength="50">
-                    <button class="btn btn-success" onclick="addStudent()">➕ Voeg Leerling Toe</button>
-                </div>
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="exportData()">💾 Exporteer Leerling</button>
-                    <button class="btn btn-secondary" onclick="importData()">📥 Importeer Leerling</button>
-                </div>
-            </div>
-            <div class="control-row">
-                <div class="button-group" style="flex: 1;">
-                    <button class="btn btn-primary" onclick="exportAllStudents()">📦 Exporteer Alle Leerlingen</button>
-                    <button class="btn btn-secondary" onclick="importAllStudents()">📥 Importeer Groep</button>
-                    <button class="btn btn-secondary" onclick="showSettings()">⚙️ JSONBin</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- JSONBin Instellingen Modal -->
-        <div id="settingsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
-            <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
-                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                    <h2 style="color: #667eea; margin-bottom: 20px;">☁️ Cloud Opslag Status</h2>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #495057;">
-                            API Key:
-                        </label>
-                        <input 
-                            type="password" 
-                            id="apiKeyInput" 
-                            placeholder="Geconfigureerd" 
-                            style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px; font-family: monospace; font-size: 0.9em; background: #f8f9fa;"
-                            readonly
-                        >
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #495057;">
-                            Bin ID:
-                        </label>
-                        <input 
-                            type="text" 
-                            id="binIdInput" 
-                            style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px; font-family: monospace; font-size: 0.9em; background: #f8f9fa;"
-                            readonly
-                        >
-                    </div>
-                    
-                    <div id="connectionStatus" style="margin-bottom: 20px; padding: 15px; border-radius: 8px;">
-                    </div>
-                    
-                    <div style="margin-bottom: 20px; padding: 15px; background: #e7f3ff; border-radius: 8px; border-left: 4px solid #667eea;">
-                        <strong style="color: #667eea; display: block; margin-bottom: 10px;">💡 Hoe werkt het?</strong>
-                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: #495057;">
-                            <li>Alle wijzigingen worden automatisch opgeslagen naar de cloud</li>
-                            <li>Bij opstarten wordt de laatste versie geladen</li>
-                            <li>Lokale + cloud data worden samengevoegd</li>
-                            <li>Deel dit bestand met collega's - iedereen werkt in dezelfde database</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                        <button class="btn btn-primary" onclick="closeSettings()">Sluiten</button>
-                    </div>
-                </div>
             </div>
         </div>
         
@@ -724,6 +641,29 @@
         </div>
         
         <div class="footer">
+            <div style="border-top: 2px solid #e9ecef; padding-top: 20px; margin-bottom: 20px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; text-align: center;">🔧 Beheer Opties</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <div class="add-student-form" style="max-width: 500px; margin: 0 auto;">
+                        <input type="text" id="newStudentName" placeholder="Naam nieuwe leerling..." maxlength="50" style="flex: 1; padding: 10px 15px; border: 2px solid #dee2e6; border-radius: 8px;">
+                        <button class="btn btn-success" onclick="addStudent()">➕ Voeg Leerling Toe</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
+                    <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="exportData()">💾 Exporteer Leerling</button>
+                    <button class="btn btn-secondary" onclick="importData()">📥 Importeer Leerling</button>
+                    <button class="btn btn-primary" onclick="exportAllStudents()">📦 Exporteer Alle Leerlingen</button>
+                    <button class="btn btn-secondary" onclick="importAllStudents()">📥 Importeer Groep</button>
+                </div>
+            </div>
+            
             <p>☁️ Cloud opslag actief via JSONBin.io • Alle wijzigingen worden automatisch gesynchroniseerd</p>
             <p>💡 Deel dit bestand met collega's om samen in dezelfde database te werken</p>
         </div>
@@ -763,145 +703,19 @@
             }
         }
         
-        // Check bij laden of gebruiker al is ingelogd in deze sessie
-        window.addEventListener('DOMContentLoaded', function() {
-            if (sessionStorage.getItem('authenticated') === 'true') {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-            }
-        });
-        
-        const MAX_STUDENTS = 20;
-        
-        // ===== JSONBIN.IO CONFIGURATIE (HARDCODED) =====
+        // JSONBin.io configuratie  
         const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
         const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
         const JSONBIN_API_URL = 'https://api.jsonbin.io/v3';
-        
-        // Sync status indicator
         let isSyncing = false;
         
-        // Toon instellingen modal (nu alleen informatief)
-        function showSettings() {
-            const modal = document.getElementById('settingsModal');
-            const statusDiv = document.getElementById('connectionStatus');
-            
-            statusDiv.style.display = 'block';
-            statusDiv.style.background = '#d4edda';
-            statusDiv.style.color = '#155724';
-            statusDiv.innerHTML = `
-                <strong>✅ Cloud Opslag Actief</strong><br>
-                <small style="margin-top: 5px; display: block;">Bin ID: ${JSONBIN_BIN_ID}</small>
-                <small>Al je wijzigingen worden automatisch opgeslagen naar de cloud.</small>
-            `;
-            
-            document.getElementById('apiKeyInput').value = '••••••••••••••••••••••••••';
-            document.getElementById('apiKeyInput').disabled = true;
-            document.getElementById('binIdInput').value = JSONBIN_BIN_ID;
-            document.getElementById('binIdInput').disabled = true;
-            
-            modal.style.display = 'flex';
-        }
-        
-        // Sluit instellingen modal
-        function closeSettings() {
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-        
-        // Bewaar instellingen (nu alleen sluiten)
-        function saveSettings() {
-            closeSettings();
-        }
-        
-        // Laad data van JSONBin en merge met lokale data
-        async function loadFromJSONBin(cloudData) {
-            if (!cloudData) return;
-            
-            // Laad leerlingen lijst
-            if (cloudData.studentsList) {
-                const localStudents = getStudentsList();
-                const mergedStudents = [...new Set([...localStudents, ...cloudData.studentsList])];
-                mergedStudents.sort();
-                localStorage.setItem('studentsList', JSON.stringify(mergedStudents));
-            }
-            
-            // Laad leerling data
-            if (cloudData.studentsData) {
-                Object.keys(cloudData.studentsData).forEach(student => {
-                    const key = `student_${student}`;
-                    localStorage.setItem(key, JSON.stringify(cloudData.studentsData[student]));
-                });
-            }
-        }
-        
-        // Opslaan naar JSONBin
-        async function saveToJSONBin() {
-            if (isSyncing) return; // Voorkom dubbele saves
-            isSyncing = true;
-            
-            const students = getStudentsList();
-            const allData = {
-                aftekenlijst: "TaalCompleet A1",
-                lastUpdated: new Date().toISOString(),
-                studentsList: students,
-                studentsData: {}
-            };
-            
-            students.forEach(student => {
-                allData.studentsData[student] = getStudentData(student);
-            });
-            
-            try {
-                // Update de bin
-                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(allData)
-                });
-                
-                if (response.ok) {
-                    console.log('✅ Opgeslagen naar cloud');
-                } else {
-                    console.error('❌ Cloud opslag mislukt');
-                }
-            } catch (error) {
-                console.error('JSONBin sync error:', error);
-            } finally {
-                isSyncing = false;
-            }
-        }
-        
-        // Laad van JSONBin bij opstarten
-        async function loadFromJSONBinOnStart() {
-            try {
-                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}/latest`, {
-                    headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    await loadFromJSONBin(data.record);
-                    updateStudentSelector();
-                    console.log('✅ Data geladen van cloud');
-                } else {
-                    console.log('⚠️ Kon niet laden van cloud, gebruik lokale data');
-                }
-            } catch (error) {
-                console.error('Kon niet laden van JSONBin:', error);
-            }
-        }
-        
-        // Start automatisch laden bij inloggen
+        // App start direct
         window.addEventListener('DOMContentLoaded', function() {
-            if (sessionStorage.getItem('authenticated') === 'true') {
-                loadFromJSONBinOnStart();
-            }
+            initStudents();
+            loadFromJSONBinOnStart();
         });
+        
+        const MAX_STUDENTS = 20;
         
         const themes = [
             {
@@ -1093,9 +907,6 @@
         
         function saveStudentsList(students) {
             localStorage.setItem('studentsList', JSON.stringify(students));
-            
-            // Ook opslaan naar JSONBin (als geconfigureerd)
-            saveToJSONBin();
         }
         
         function addStudent() {
@@ -1274,9 +1085,6 @@
         function saveStudentData(student, data) {
             const key = `student_${student}`;
             localStorage.setItem(key, JSON.stringify(data));
-            
-            // Ook opslaan naar JSONBin (als geconfigureerd)
-            saveToJSONBin();
         }
         
         function updateCheckbox(themeIndex, lessonIndex, type) {
@@ -1380,13 +1188,14 @@
         function toggleTheme(themeIndex) {
             const content = document.getElementById(`theme-content-${themeIndex}`);
             const header = document.getElementById(`theme-header-${themeIndex}`);
+            const icon = header.querySelector('.toggle-icon');
             
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                header.classList.remove('collapsed');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
             } else {
-                content.classList.add('collapsed');
-                header.classList.add('collapsed');
+                content.style.display = 'none';
+                icon.textContent = '▶';
             }
         }
         
@@ -1443,6 +1252,21 @@
             });
             
             // Render actieve thema's
+            let firstIncompleteThemeIdx = null;
+            
+            // Vind het eerste thema met incomplete lessen
+            for (let i = 0; i < activeThemes.length; i++) {
+                const { themeIdx } = activeThemes[i];
+                const hasIncompleteLessons = themes[themeIdx].lessons.some((lesson, lessonIdx) => {
+                    return !(data[themeIdx]?.[lessonIdx]?.book && data[themeIdx]?.[lessonIdx]?.online);
+                });
+                
+                if (hasIncompleteLessons) {
+                    firstIncompleteThemeIdx = themeIdx;
+                    break;
+                }
+            }
+            
             activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }) => {
                 const themeBookPercentage = Math.round((themeBookCompleted / themeLessons) * 100);
                 const themeOnlinePercentage = Math.round((themeOnlineCompleted / themeLessons) * 100);
@@ -1475,6 +1299,11 @@
                 
                 completedLessons.sort((a, b) => b.timestamp - a.timestamp);
                 
+                // Bepaal of dit thema het huidige thema is (alleen het EERSTE thema met incomplete lessen)
+                const isCurrentTheme = (themeIdx === firstIncompleteThemeIdx);
+                const contentDisplay = isCurrentTheme ? 'block' : 'none';
+                const toggleIcon = isCurrentTheme ? '▼' : '▶';
+                
                 activeThemesHtml += `
                     <div class="theme-container">
                         <div class="theme-section">
@@ -1487,9 +1316,9 @@
                                         <span style="font-weight: 700;">Totaal: ${themeTotalPercentage}%</span>
                                     </div>
                                 </div>
-                                <span class="toggle-icon">▼</span>
+                                <span class="toggle-icon">${toggleIcon}</span>
                             </div>
-                            <div class="theme-content" id="theme-content-${themeIdx}">
+                            <div class="theme-content" id="theme-content-${themeIdx}" style="display: ${contentDisplay};">
                                 <table class="lessons-table">
                                     <thead>
                                         <tr>
@@ -1575,27 +1404,57 @@
                 if (completedLessons.length > 0) {
                     activeThemesHtml += `
                         <div class="completed-section">
-                            <h3>✅ Afgerond (${completedLessons.length})</h3>
-                            <div class="completed-grid">
+                            <h3 style="color: #28a745; margin-bottom: 15px; font-size: 1.1em;">✅ Afgerond (${completedLessons.length})</h3>
+                            <table class="lessons-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 100px;">Les</th>
+                                        <th>Titel</th>
+                                        <th style="width: 120px; text-align: center;">📖 Boek</th>
+                                        <th style="width: 120px; text-align: center;">💻 Online</th>
+                                        <th style="width: 150px; text-align: center;">Datum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                     `;
                     
                     completedLessons.forEach((lessonData, index) => {
                         const isLatest = index === 0;
-                        const itemClass = isLatest ? 'completed-item latest' : 'completed-item';
+                        const rowClass = isLatest ? 'completed-lesson latest' : 'completed-lesson';
                         const badge = isLatest ? '<span class="completed-item-badge">LAATST</span>' : '';
                         const displayDate = lessonData.completedDate || formatDate(lessonData.timestamp);
                         
                         activeThemesHtml += `
-                            <div class="${itemClass}">
-                                <div class="completed-item-number">${lessonData.lesson.number}${badge}</div>
-                                <div class="completed-item-title">${lessonData.lesson.title}</div>
-                                <div class="completed-item-date">📅 ${displayDate}</div>
-                            </div>
+                            <tr class="${rowClass}">
+                                <td class="lesson-number">${lessonData.lesson.number}</td>
+                                <td class="lesson-title">
+                                    ${lessonData.lesson.title}
+                                    ${badge}
+                                </td>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" 
+                                           class="custom-checkbox" 
+                                           id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_book"
+                                           onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'book')"
+                                           ${lessonData.bookChecked}>
+                                </td>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" 
+                                           class="custom-checkbox" 
+                                           id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_online"
+                                           onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'online')"
+                                           ${lessonData.onlineChecked}>
+                                </td>
+                                <td style="text-align: center; font-size: 0.9em; color: #28a745;">
+                                    📅 ${displayDate}
+                                </td>
+                            </tr>
                         `;
                     });
                     
                     activeThemesHtml += `
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     `;
                 }
@@ -1801,7 +1660,111 @@
             }
         }
         
-        initStudents();
+        // ===== JSONBIN.IO FUNCTIES =====
+        async function loadFromJSONBin(cloudData) {
+            if (!cloudData) return;
+            
+            if (cloudData.studentsList) {
+                const localStudents = getStudentsList();
+                const mergedStudents = [...new Set([...localStudents, ...cloudData.studentsList])];
+                mergedStudents.sort();
+                localStorage.setItem('studentsList', JSON.stringify(mergedStudents));
+            }
+            
+            if (cloudData.studentsData) {
+                Object.keys(cloudData.studentsData).forEach(student => {
+                    const key = `student_${student}`;
+                    localStorage.setItem(key, JSON.stringify(cloudData.studentsData[student]));
+                });
+            }
+        }
+        
+        async function saveToJSONBin() {
+            if (isSyncing) return;
+            isSyncing = true;
+            
+            const students = getStudentsList();
+            const allData = {
+                aftekenlijst: "TaalCompleet A1",
+                lastUpdated: new Date().toISOString(),
+                studentsList: students,
+                studentsData: {}
+            };
+            
+            students.forEach(student => {
+                allData.studentsData[student] = getStudentData(student);
+            });
+            
+            try {
+                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(allData)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Opgeslagen naar cloud');
+                }
+            } catch (error) {
+                console.error('Cloud sync error:', error);
+            } finally {
+                isSyncing = false;
+            }
+        }
+        
+        async function loadFromJSONBinOnStart() {
+            console.log('🔄 Start laden van JSONBin database...');
+            console.log('API URL:', JSONBIN_API_URL);
+            console.log('Bin ID:', JSONBIN_BIN_ID);
+            
+            updateStudentSelector();
+            
+            try {
+                console.log('📡 Fetch aanroep naar JSONBin...');
+                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_API_KEY
+                    }
+                });
+                
+                console.log('📥 Response status:', response.status, response.statusText);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('📦 Data ontvangen:', data);
+                    await loadFromJSONBin(data.record);
+                    updateStudentSelector();
+                    
+                    if (currentStudent) {
+                        renderStudentProgress();
+                    }
+                    
+                    console.log('✅ Data geladen van cloud');
+                } else {
+                    console.error('❌ Response niet OK:', response.status);
+                }
+            } catch (error) {
+                console.error('❌ Fout bij laden van JSONBin:', error);
+            }
+        }
+        
+        // Override saveStudentData en saveStudentsList om ook naar cloud te schrijven
+        const originalSaveStudentData = saveStudentData;
+        const originalSaveStudentsList = saveStudentsList;
+        
+        saveStudentData = function(student, data) {
+            const key = `student_${student}`;
+            localStorage.setItem(key, JSON.stringify(data));
+            saveToJSONBin();
+        };
+        
+        saveStudentsList = function(students) {
+            localStorage.setItem('studentsList', JSON.stringify(students));
+            saveToJSONBin();
+        };
     </script>
 </body>
 </html>
