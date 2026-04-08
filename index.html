@@ -712,33 +712,6 @@
     <input type="file" id="importGroupFile" style="display: none;" accept=".json">
     
     <script>
-        const CORRECT_PASSWORD = 'ISK2026!';
-        
-        function checkPassword(event) {
-            event.preventDefault();
-            const password = document.getElementById('passwordInput').value;
-            
-            if (password === CORRECT_PASSWORD) {
-                // Wachtwoord correct - toon de app
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                
-                // Sla de sessie op (optioneel - werkt alleen tijdens deze browsersessie)
-                sessionStorage.setItem('authenticated', 'true');
-            } else {
-                // Wachtwoord onjuist - toon foutmelding
-                const errorMsg = document.getElementById('errorMessage');
-                errorMsg.style.display = 'block';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-                
-                // Verberg foutmelding na 3 seconden
-                setTimeout(() => {
-                    errorMsg.style.display = 'none';
-                }, 3000);
-            }
-        }
-        
         // JSONBin.io configuratie  
         const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
         const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
@@ -751,13 +724,20 @@
             event.preventDefault();
             const password = document.getElementById('passwordInput').value;
             
+            console.log('Ingevoerd wachtwoord:', password);
+            console.log('Verwacht wachtwoord:', CORRECT_PASSWORD);
+            console.log('Match:', password === CORRECT_PASSWORD);
+            console.log('Password length:', password.length, 'Expected length:', CORRECT_PASSWORD.length);
+            
             if (password === CORRECT_PASSWORD) {
+                console.log('✅ Wachtwoord correct!');
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'block';
                 sessionStorage.setItem('authenticated', 'true');
                 initStudents();
                 loadFromJSONBinOnStart();
             } else {
+                console.log('❌ Wachtwoord incorrect!');
                 const errorMsg = document.getElementById('errorMessage');
                 errorMsg.style.display = 'block';
                 document.getElementById('passwordInput').value = '';
