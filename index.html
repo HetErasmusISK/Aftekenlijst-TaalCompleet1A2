@@ -700,7 +700,7 @@
                 </div>
             </div>
             
-            <p>☁️ Cloud opslag actief via JSONBin.io • Alle wijzigingen worden automatisch gesynchroniseerd</p>
+            <p>☁️ Cloud opslag actief via Supabase • Alle wijzigingen worden automatisch gesynchroniseerd</p>
             <p>💡 Deel dit bestand met collega's om samen in dezelfde database te werken</p>
         </div>
     </div>
@@ -712,10 +712,9 @@
     <input type="file" id="importGroupFile" style="display: none;" accept=".json">
     
     <script>
-        // JSONBin.io configuratie  
-        const JSONBIN_API_KEY = '$2a$10$yxXl6AKN36uW/ZZoQrcqyOpOf9rtqvyYU6v7fxDaVL.ErD9FC/9SS';
-        const JSONBIN_BIN_ID = '69c39ec8aa77b81da919232a';
-        const JSONBIN_API_URL = 'https://api.jsonbin.io/v3';
+        // Supabase configuratie
+        const SUPABASE_URL = 'https://auvccnyiydeloszaadsv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1dmNjbnlpeWRlbG9zemFhZHN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MTE1OTUsImV4cCI6MjA5MTE4NzU5NX0.qrn_15g0QLte4ZmY7aulxeOH2ccC3ZaxoxpwsWTc5dU';
         let isSyncing = false;
         
         const CORRECT_PASSWORD = 'ISK2026!';
@@ -735,7 +734,7 @@
                 document.getElementById('mainContent').style.display = 'block';
                 sessionStorage.setItem('authenticated', 'true');
                 initStudents();
-                loadFromJSONBinOnStart();
+                loadFromSupabase();
             } else {
                 console.log('❌ Wachtwoord incorrect!');
                 const errorMsg = document.getElementById('errorMessage');
@@ -755,7 +754,7 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'block';
                 initStudents();
-                loadFromJSONBinOnStart();
+                loadFromSupabase();
             }
         });
         
@@ -1014,6 +1013,8 @@
                 return;
             }
             
+            const oldName = currentStudent;
+            
             // Haal data van oude naam op
             const data = getStudentData(currentStudent);
             
@@ -1029,6 +1030,9 @@
             students.sort();
             saveStudentsList(students);
             saveStudentData(trimmedName, data);
+            
+            // Update in Supabase
+            renameStudentInSupabase(oldName, trimmedName);
             
             // Update selectie
             currentStudent = trimmedName;
@@ -1056,6 +1060,9 @@
                 
                 // Verwijder ook de data van deze leerling
                 localStorage.removeItem(`student_${currentStudent}`);
+                
+                // Verwijder uit Supabase
+                deleteStudentFromSupabase(currentStudent);
                 
                 currentStudent = '';
                 updateStudentSelector();
@@ -1191,7 +1198,7 @@
             
             data[themeIndex][lessonIndex][type] = checkbox.checked;
             
-            // Als beide (boek EN online) zijn afgevinkt, sla timestamp en datum op
+            // Als beide (boek EN laptop) zijn afgevinkt, sla timestamp en datum op
             if (data[themeIndex][lessonIndex].book && data[themeIndex][lessonIndex].online) {
                 if (!data[themeIndex][lessonIndex].timestamp) {
                     // Eerste keer afgerond - sla huidige datum op
@@ -1205,6 +1212,9 @@
             }
             
             saveStudentData(currentStudent, data);
+            
+            // Sla ook op naar Supabase
+            saveToSupabase(currentStudent, themeIndex, lessonIndex, data[themeIndex][lessonIndex]);
             
             // Herlaad de weergave om de sorteerorde bij te werken
             renderStudentProgress();
@@ -1755,110 +1765,154 @@
         }
         
         // ===== JSONBIN.IO FUNCTIES =====
-        async function loadFromJSONBin(cloudData) {
-            if (!cloudData) return;
-            
-            if (cloudData.studentsList) {
-                const localStudents = getStudentsList();
-                const mergedStudents = [...new Set([...localStudents, ...cloudData.studentsList])];
-                mergedStudents.sort();
-                localStorage.setItem('studentsList', JSON.stringify(mergedStudents));
-            }
-            
-            if (cloudData.studentsData) {
-                Object.keys(cloudData.studentsData).forEach(student => {
-                    const key = `student_${student}`;
-                    localStorage.setItem(key, JSON.stringify(cloudData.studentsData[student]));
-                });
-            }
-        }
+        // ===== SUPABASE FUNCTIES =====
         
-        async function saveToJSONBin() {
-            if (isSyncing) return;
-            isSyncing = true;
-            
-            const students = getStudentsList();
-            const allData = {
-                aftekenlijst: "TaalCompleet A1",
-                lastUpdated: new Date().toISOString(),
-                studentsList: students,
-                studentsData: {}
-            };
-            
-            students.forEach(student => {
-                allData.studentsData[student] = getStudentData(student);
-            });
-            
-            try {
-                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(allData)
-                });
-                
-                if (response.ok) {
-                    console.log('✅ Opgeslagen naar cloud');
-                }
-            } catch (error) {
-                console.error('Cloud sync error:', error);
-            } finally {
-                isSyncing = false;
-            }
-        }
-        
-        async function loadFromJSONBinOnStart() {
-            console.log('🔄 Start laden van JSONBin database...');
-            console.log('API URL:', JSONBIN_API_URL);
-            console.log('Bin ID:', JSONBIN_BIN_ID);
-            
+        async function loadFromSupabase() {
+            console.log('🔄 Start laden van Supabase database...');
             updateStudentSelector();
             
             try {
-                console.log('📡 Fetch aanroep naar JSONBin...');
-                const response = await fetch(`${JSONBIN_API_URL}/b/${JSONBIN_BIN_ID}/latest`, {
+                // Haal alle student progress records op
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/student_progress?select=*`, {
                     headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
                 
                 console.log('📥 Response status:', response.status, response.statusText);
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('📦 Data ontvangen:', data);
-                    await loadFromJSONBin(data.record);
-                    updateStudentSelector();
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const records = await response.json();
+                console.log('📦 Data ontvangen:', records.length, 'records');
+                
+                // Converteer Supabase records naar localStorage formaat
+                const studentsSet = new Set();
+                const studentsData = {};
+                
+                records.forEach(record => {
+                    const studentName = record.student_name;
+                    studentsSet.add(studentName);
                     
-                    if (currentStudent) {
-                        renderStudentProgress();
+                    if (!studentsData[studentName]) {
+                        studentsData[studentName] = {};
                     }
                     
-                    console.log('✅ Data geladen van cloud');
-                } else {
-                    console.error('❌ Response niet OK:', response.status);
+                    if (!studentsData[studentName][record.theme_index]) {
+                        studentsData[studentName][record.theme_index] = {};
+                    }
+                    
+                    studentsData[studentName][record.theme_index][record.lesson_index] = {
+                        book: record.book_completed,
+                        online: record.laptop_completed,
+                        completedDate: record.completed_date,
+                        timestamp: record.timestamp
+                    };
+                });
+                
+                // Sla op in localStorage
+                const studentsList = Array.from(studentsSet).sort();
+                localStorage.setItem('studentsList', JSON.stringify(studentsList));
+                
+                Object.keys(studentsData).forEach(student => {
+                    const key = `student_${student}`;
+                    localStorage.setItem(key, JSON.stringify(studentsData[student]));
+                });
+                
+                updateStudentSelector();
+                
+                if (currentStudent) {
+                    renderStudentProgress();
                 }
+                
+                console.log('✅ Data geladen van Supabase:', studentsList.length, 'leerlingen');
+                
             } catch (error) {
-                console.error('❌ Fout bij laden van JSONBin:', error);
+                console.error('❌ Fout bij laden van Supabase:', error);
             }
         }
         
-        // Override saveStudentData en saveStudentsList om ook naar cloud te schrijven
-        const originalSaveStudentData = saveStudentData;
-        const originalSaveStudentsList = saveStudentsList;
+        async function saveToSupabase(studentName, themeIndex, lessonIndex, data) {
+            if (isSyncing) return;
+            isSyncing = true;
+            
+            try {
+                const record = {
+                    student_name: studentName,
+                    theme_index: parseInt(themeIndex),
+                    lesson_index: parseInt(lessonIndex),
+                    book_completed: data.book || false,
+                    laptop_completed: data.online || false,
+                    completed_date: data.completedDate || null,
+                    timestamp: data.timestamp || null
+                };
+                
+                // Upsert (insert or update)
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/student_progress`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(record)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Opgeslagen naar Supabase');
+                } else {
+                    console.error('❌ Supabase save error:', response.status);
+                }
+                
+            } catch (error) {
+                console.error('Supabase sync error:', error);
+            } finally {
+                isSyncing = false;
+            }
+        }
         
-        saveStudentData = function(student, data) {
-            const key = `student_${student}`;
-            localStorage.setItem(key, JSON.stringify(data));
-            saveToJSONBin();
-        };
+        async function deleteStudentFromSupabase(studentName) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/student_progress?student_name=eq.${encodeURIComponent(studentName)}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Leerling verwijderd uit Supabase');
+                }
+            } catch (error) {
+                console.error('Supabase delete error:', error);
+            }
+        }
         
-        saveStudentsList = function(students) {
-            localStorage.setItem('studentsList', JSON.stringify(students));
-            saveToJSONBin();
-        };
+        async function renameStudentInSupabase(oldName, newName) {
+            try {
+                // Update alle records met de oude naam
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/student_progress?student_name=eq.${encodeURIComponent(oldName)}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ student_name: newName })
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Naam gewijzigd in Supabase');
+                }
+            } catch (error) {
+                console.error('Supabase rename error:', error);
+            }
+        }
     </script>
 </body>
 </html>
