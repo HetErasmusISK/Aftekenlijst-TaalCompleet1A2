@@ -191,6 +191,17 @@
             transform: translateY(-2px);
         }
         
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+        
         .content {
             padding: 30px;
         }
@@ -612,10 +623,34 @@
     </style>
 </head>
 <body>
-    <div id="loginScreen" style="display: none;">
+    <div id="loginScreen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
+            <h1 style="color: #667eea; margin-bottom: 10px; text-align: center; font-size: 2em;">🔒 Aftekenlijst A1</h1>
+            <p style="color: #6c757d; text-align: center; margin-bottom: 30px;">Voer het wachtwoord in om toegang te krijgen</p>
+            <form onsubmit="checkPassword(event)" style="display: flex; flex-direction: column; gap: 15px;">
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    placeholder="Wachtwoord" 
+                    style="padding: 15px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; width: 100%;"
+                    autofocus
+                >
+                <button 
+                    type="submit" 
+                    style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.3)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                >
+                    🔓 Inloggen
+                </button>
+                <div id="errorMessage" style="color: #dc3545; text-align: center; font-size: 0.9em; display: none; margin-top: 5px;">
+                    ❌ Onjuist wachtwoord. Probeer opnieuw.
+                </div>
+            </form>
+        </div>
     </div>
     
-    <div id="mainContent">
+    <div id="mainContent" style="display: none;">
     <div class="container">
         <div class="header">
             <h1>📚 Aftekenlijst Taalcompleet A1</h1>
@@ -652,6 +687,7 @@
                 </div>
                 
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button class="btn btn-info" onclick="renameStudent()">✏️ Wijzig Naam</button>
                     <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
                     <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
                 </div>
@@ -709,10 +745,38 @@
         const JSONBIN_API_URL = 'https://api.jsonbin.io/v3';
         let isSyncing = false;
         
+        const CORRECT_PASSWORD = 'ISK2026!';
+        
+        function checkPassword(event) {
+            event.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            
+            if (password === CORRECT_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                sessionStorage.setItem('authenticated', 'true');
+                initStudents();
+                loadFromJSONBinOnStart();
+            } else {
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
         // App start direct
         window.addEventListener('DOMContentLoaded', function() {
-            initStudents();
-            loadFromJSONBinOnStart();
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                initStudents();
+                loadFromJSONBinOnStart();
+            }
         });
         
         const MAX_STUDENTS = 20;
@@ -945,6 +1009,56 @@
             alert(`Leerling "${name}" succesvol toegevoegd!`);
         }
         
+        function renameStudent() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling!');
+                return;
+            }
+            
+            const newName = prompt(`Nieuwe naam voor "${currentStudent}":`, currentStudent);
+            
+            if (!newName || newName.trim() === '') {
+                return;
+            }
+            
+            const trimmedName = newName.trim();
+            
+            if (trimmedName === currentStudent) {
+                return; // Geen wijziging
+            }
+            
+            const students = getStudentsList();
+            
+            if (students.includes(trimmedName)) {
+                alert('Een leerling met deze naam bestaat al!');
+                return;
+            }
+            
+            // Haal data van oude naam op
+            const data = getStudentData(currentStudent);
+            
+            // Verwijder oude naam
+            const index = students.indexOf(currentStudent);
+            if (index > -1) {
+                students.splice(index, 1);
+            }
+            localStorage.removeItem(`student_${currentStudent}`);
+            
+            // Voeg nieuwe naam toe
+            students.push(trimmedName);
+            students.sort();
+            saveStudentsList(students);
+            saveStudentData(trimmedName, data);
+            
+            // Update selectie
+            currentStudent = trimmedName;
+            updateStudentSelector();
+            document.getElementById('studentSelect').value = trimmedName;
+            renderStudentProgress();
+            
+            alert(`Naam gewijzigd naar "${trimmedName}"!`);
+        }
+        
         function deleteStudent() {
             if (!currentStudent) {
                 alert('Selecteer eerst een leerling om te verwijderen!');
@@ -1160,7 +1274,7 @@
                         </p>
                     </div>
                     <div class="progress-card">
-                        <h4>💻 Online Afgerond</h4>
+                        <h4>💻 Laptop Afgerond</h4>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress.onlinePercentage}%">
                                 ${progress.onlinePercentage}%
@@ -1325,7 +1439,7 @@
                                             <th style="width: 100px;">Les</th>
                                             <th>Titel</th>
                                             <th style="width: 120px; text-align: center;">📖 Boek</th>
-                                            <th style="width: 120px; text-align: center;">💻 Online</th>
+                                            <th style="width: 120px; text-align: center;">💻 Laptop</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1411,7 +1525,7 @@
                                         <th style="width: 100px;">Les</th>
                                         <th>Titel</th>
                                         <th style="width: 120px; text-align: center;">📖 Boek</th>
-                                        <th style="width: 120px; text-align: center;">💻 Online</th>
+                                        <th style="width: 120px; text-align: center;">💻 Laptop</th>
                                         <th style="width: 150px; text-align: center;">Datum</th>
                                     </tr>
                                 </thead>
