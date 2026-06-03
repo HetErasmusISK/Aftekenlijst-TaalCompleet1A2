@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aftekenlijst Taalcompleet A1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .student-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .student-selector label {
+            font-weight: 600;
+            color: #495057;
+            white-space: nowrap;
+        }
+        
+        .student-selector select {
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .student-selector select:hover {
+            border-color: #667eea;
+        }
+        
+        .student-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .add-student-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .add-student-form input {
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .add-student-form input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            align-items: start;
+        }
+        
+        .active-themes {
+            min-width: 0;
+        }
+        
+        .completed-themes-sidebar {
+            position: sticky;
+            top: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .completed-themes-sidebar h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .completed-theme-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 5px solid #28a745;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .completed-theme-item:hover {
+            background: #e8f5e9;
+            transform: translateX(-3px);
+        }
+        
+        .completed-theme-name {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .completed-theme-stats {
+            font-size: 0.85em;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .completed-theme-date {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .no-completed-themes {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        
+        .theme-container {
+            margin-bottom: 30px;
+        }
+        
+        .completed-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            margin-top: 20px;
+        }
+        
+        .completed-section h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .completed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .completed-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            font-size: 0.9em;
+        }
+        
+        .completed-item.latest {
+            background: #d4edda;
+            border-left-width: 6px;
+        }
+        
+        .completed-lesson {
+            background: #f0f9f4 !important;
+        }
+        
+        .completed-lesson.latest {
+            background: #d4edda !important;
+            font-weight: 500;
+        }
+        
+        .completed-lesson:hover {
+            background: #e8f5ee !important;
+        }
+        
+        .completed-item-number {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+        
+        .completed-item-title {
+            color: #495057;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        
+        .completed-item-date {
+            color: #6c757d;
+            font-size: 0.85em;
+            font-style: italic;
+        }
+        
+        .completed-item-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .no-completed {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        
+        .lesson-date {
+            color: #6c757d;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        .student-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .student-info h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .progress-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .progress-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-card h4 {
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .planning-panel {
+            background: #fffdf7;
+            border: 2px solid #f1dfb8;
+            border-left: 5px solid #d8911f;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .planning-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .planning-header h3 {
+            color: #8a5a00;
+            font-size: 1.25em;
+            margin-bottom: 6px;
+        }
+
+        .planning-header p,
+        .planning-muted {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .planning-start {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 210px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .planning-date-input,
+        .planning-status,
+        .planning-note {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            color: #212529;
+            font: inherit;
+        }
+
+        .planning-date-input {
+            padding: 10px 12px;
+        }
+
+        .planning-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .planning-card {
+            background: white;
+            border: 1px solid #f1dfb8;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .planning-card span {
+            display: block;
+            color: #6c757d;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .planning-card strong {
+            color: #212529;
+            font-size: 1.05em;
+        }
+
+        .theme-plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .theme-plan-card {
+            background: white;
+            border: 1px solid #f1dfb8;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .theme-plan-card strong {
+            display: block;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .theme-plan-card span {
+            display: block;
+            color: #6c757d;
+            font-size: 0.88em;
+            line-height: 1.4;
+        }
+
+        .planning-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #f1dfb8;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .planning-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 860px;
+        }
+
+        .planning-table thead {
+            background: #fff4d8;
+        }
+
+        .planning-table th,
+        .planning-table td {
+            padding: 10px;
+            border-bottom: 1px solid #f3ead9;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .planning-table th {
+            color: #6d4a00;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .planning-table tr.week-current {
+            outline: 3px solid #d8911f;
+            outline-offset: -3px;
+            background: #fff8e8;
+        }
+
+        .planning-table tr.week-catchup {
+            background: #f4fbff;
+        }
+
+        .planning-target {
+            line-height: 1.45;
+        }
+
+        .planning-status {
+            width: 125px;
+            padding: 8px;
+            font-size: 0.9em;
+        }
+
+        .planning-note {
+            width: 100%;
+            min-width: 160px;
+            padding: 8px;
+            font-size: 0.9em;
+        }
+
+        .status-vakantie,
+        .status-afwezig {
+            background: #fff0f0;
+        }
+
+        .status-worked {
+            background: #eaf7ee;
+        }
+
+        .status-planned {
+            background: #eef3ff;
+        }
+
+        .planning-empty {
+            background: white;
+            border: 1px dashed #d8911f;
+            border-radius: 8px;
+            padding: 16px;
+            color: #6c757d;
+        }
+
+        .plan-label {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: #fff4d8;
+            color: #8a5a00;
+            font-size: 0.78em;
+            font-weight: 600;
+        }
+
+        .theme-planning-panel {
+            background: #fffdf7;
+            border: 2px solid #f1dfb8;
+            border-left: 5px solid #d8911f;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .theme-planning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .theme-planning-header h3 {
+            color: #8a5a00;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+
+        .theme-planning-period {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.45;
+        }
+
+        .planning-state-bar {
+            height: 34px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .planning-state-fill {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .planning-state-fill.inside {
+            background: #1f9d55;
+        }
+
+        .planning-state-fill.outside {
+            background: #dc3545;
+        }
+
+        .planning-state-fill.unknown {
+            background: #6c757d;
+        }
+
+        .theme-planning-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .theme-planning-meta div {
+            background: white;
+            border: 1px solid #f1dfb8;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .theme-planning-meta span {
+            display: block;
+            color: #6c757d;
+            font-size: 0.82em;
+            margin-bottom: 4px;
+        }
+
+        .theme-planning-meta strong {
+            color: #212529;
+        }
+
+        .theme-planning-panel .planning-table {
+            min-width: 760px;
+        }
+        
+        .theme-section {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .current-lesson-highlight {
+            background: #fff3cd !important;
+            border-left: 4px solid #ffc107 !important;
+        }
+        
+        .current-lesson-highlight:hover {
+            background: #ffe69c !important;
+        }
+        
+        .current-lesson-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #212529;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .theme-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.2em;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .theme-header:hover {
+            opacity: 0.9;
+        }
+        
+        .theme-header .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .theme-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .lessons-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .lessons-table thead {
+            background: #f8f9fa;
+        }
+        
+        .lessons-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .lessons-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .lessons-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .checkbox-cell {
+            text-align: center;
+        }
+        
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .lesson-number {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .lesson-title {
+            color: #212529;
+        }
+        
+        .theme-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .theme-content.collapsed {
+            max-height: 0;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .controls, .footer {
+                display: none;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .completed-themes-sidebar {
+                position: static;
+                max-height: 400px;
+                order: 2;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .control-row {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .student-selector,
+            .add-student-form {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .student-selector select,
+            .add-student-form input {
+                max-width: none;
+            }
+            
+            .button-group {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+
+            .planning-header {
+                flex-direction: column;
+            }
+
+            .planning-start {
+                width: 100%;
+            }
+
+            .planning-table {
+                min-width: 720px;
+            }
+
+            .theme-planning-header {
+                flex-direction: column;
+            }
+            
+            .theme-header {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+            
+            .theme-header > div > div {
+                flex-direction: column !important;
+                gap: 5px !important;
+                align-items: flex-start !important;
+            }
+            
+            .theme-header > div > div > span {
+                font-size: 0.8em;
+            }
+            
+            .completed-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
+            <h1 style="color: #667eea; margin-bottom: 10px; text-align: center; font-size: 2em;">🔒 Aftekenlijst A1</h1>
+            <p style="color: #6c757d; text-align: center; margin-bottom: 30px;">Voer het wachtwoord in om toegang te krijgen</p>
+            <form onsubmit="checkPassword(event)" style="display: flex; flex-direction: column; gap: 15px;">
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    placeholder="Wachtwoord" 
+                    style="padding: 15px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; width: 100%;"
+                    autofocus
+                >
+                <button 
+                    type="submit" 
+                    style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.3)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                >
+                    🔓 Inloggen
+                </button>
+                <div id="errorMessage" style="color: #dc3545; text-align: center; font-size: 0.9em; display: none; margin-top: 5px;">
+                    ❌ Onjuist wachtwoord. Probeer opnieuw.
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="mainContent" style="display: none;">
+    <div class="container">
+        <div class="header">
+            <h1>📚 Aftekenlijst Taalcompleet A1</h1>
+            <p>Voortgang bijhouden per leerling</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-row">
+                <div class="student-selector">
+                    <label for="studentSelect">Selecteer leerling:</label>
+                    <select id="studentSelect">
+                        <option value="">-- Kies een leerling --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content" id="content">
+            <div class="student-info">
+                <h2>Welkom!</h2>
+                <p>Selecteer een leerling hierboven om de voortgang bij te houden.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div style="border-top: 2px solid #e9ecef; padding-top: 20px; margin-bottom: 20px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; text-align: center;">🔧 Beheer Opties</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <div class="add-student-form" style="max-width: 500px; margin: 0 auto;">
+                        <input type="text" id="newStudentName" placeholder="Naam nieuwe leerling..." maxlength="50" style="flex: 1; padding: 10px 15px; border: 2px solid #dee2e6; border-radius: 8px;">
+                        <button class="btn btn-success" onclick="addStudent()">➕ Voeg Leerling Toe</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button class="btn btn-info" onclick="renameStudent()">✏️ Wijzig Naam</button>
+                    <button class="btn btn-warning" onclick="deleteStudent()">🗑️ Verwijder Leerling</button>
+                    <button class="btn btn-danger" onclick="resetStudent()">🔄 Reset Voortgang</button>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="exportData()">💾 Exporteer Leerling</button>
+                    <button class="btn btn-secondary" onclick="importData()">📥 Importeer Leerling</button>
+                    <button class="btn btn-primary" onclick="exportAllStudents()">📦 Exporteer Alle Leerlingen</button>
+                    <button class="btn btn-secondary" onclick="importAllStudents()">📥 Importeer Groep</button>
+                </div>
+            </div>
+            
+            <p>🔥 Cloud opslag actief via Firebase Firestore • Alle wijzigingen worden automatisch gesynchroniseerd</p>
+            <p>💡 Deel dit bestand met collega's om samen in dezelfde database te werken</p>
+        </div>
+    </div>
+    
+    </div>
+    </div>
+    
+    <input type="file" id="importFile" style="display: none;" accept=".json">
+    <input type="file" id="importGroupFile" style="display: none;" accept=".json">
+    
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, query, where, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase configuratie
+        const firebaseConfig = {
+            apiKey: "AIzaSyCG8sgm-iY3NjwT85MVLmp3e9SG97jcD9I",
+            authDomain: "aftekenlijst-taalcompleet-a1.firebaseapp.com",
+            projectId: "aftekenlijst-taalcompleet-a1",
+            storageBucket: "aftekenlijst-taalcompleet-a1.firebasestorage.app",
+            messagingSenderId: "92737770661",
+            appId: "1:92737770661:web:a0ed26e47617043a27294c"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let isSyncing = false;
+        
+        const CORRECT_PASSWORD = 'ISK2026!';
+        
+        // Maak functies globaal beschikbaar
+        window.checkPassword = function(event) {
+            event.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            
+            console.log('Ingevoerd wachtwoord:', password);
+            console.log('Verwacht wachtwoord:', CORRECT_PASSWORD);
+            console.log('Match:', password === CORRECT_PASSWORD);
+            
+            if (password === CORRECT_PASSWORD) {
+                console.log('✅ Wachtwoord correct!');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                sessionStorage.setItem('authenticated', 'true');
+                initStudents();
+                loadFromFirebase();
+            } else {
+                console.log('❌ Wachtwoord incorrect!');
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // App start
+        window.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                initStudents();
+                loadFromFirebase();
+            }
+        });
+        
+        const MAX_STUDENTS = 100;
+        const PLANNING_KEY = '__planning';
+        const THEME_WEEKS = 5;
+        const SCHOOL_YEAR_WEEKS = 40;
+        const MAX_EXTRA_PLANNING_WEEKS = 20;
+        const NON_WORKING_STATUSES = ['vakantie', 'afwezig'];
+        const PLANNING_STATUS_OPTIONS = [
+            { value: 'planned', label: 'Gepland' },
+            { value: 'worked', label: 'Gewerkt' },
+            { value: 'vakantie', label: 'Vakantie' },
+            { value: 'afwezig', label: 'Afwezig' }
+        ];
+        
+        const themes = [
+            {
+                name: 'Thema 1: Hallo',
+                lessons: [
+                    { number: '1.1', title: 'Hallo' },
+                    { number: '1.2', title: 'Hoi, hallo, doei, tot ziens' },
+                    { number: '1.3', title: 'Maan – man' },
+                    { number: '1.4', title: 'Familie (1)' },
+                    { number: '1.5', title: 'A, b, c' },
+                    { number: '1.6', title: 'Ik, jij, wij' },
+                    { number: '1.7', title: 'Fiets, boek, trein' },
+                    { number: '1.8', title: 'Hoe gaat het?' },
+                    { number: '1.9', title: 'Letter, woord, zin' },
+                    { number: '1.10', title: 'Familie (2)' },
+                    { number: '1.11', title: 'Huis, neus, touw' },
+                    { number: '1.12', title: 'Ik ben, jij bent, hij is...' },
+                    { number: '1.13', title: 'Waar kom je vandaan?' },
+                    { number: '1.14', title: 'Wie? Wat? Waar?' },
+                    { number: '1.15', title: 'Ik heb, jij hebt...' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 1' }
+                ]
+            },
+            {
+                name: 'Thema 2: School',
+                lessons: [
+                    { number: '2.1', title: 'Naar school' },
+                    { number: '2.2', title: 'Eén, twee, drie' },
+                    { number: '2.3', title: 'De cursisten leren Nederlands.' },
+                    { number: '2.4', title: 'De dagen van de week' },
+                    { number: '2.5', title: 'Hoeveel? Wanneer?' },
+                    { number: '2.6', title: 'Twintig, dertig, veertig' },
+                    { number: '2.7', title: 'Wat zegt u?' },
+                    { number: '2.8', title: 'In de klas' },
+                    { number: '2.9', title: 'Een opdracht maken' },
+                    { number: '2.10', title: 'De maanden van het jaar' },
+                    { number: '2.11', title: 'In de pauze' },
+                    { number: '2.12', title: 'Woorden met ch of sch' },
+                    { number: '2.13', title: 'Ik drink, hij drinkt...' },
+                    { number: '2.14', title: 'Begrijp je het?' },
+                    { number: '2.15', title: 'Alsjeblieft, dank je wel' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 2' }
+                ]
+            },
+            {
+                name: 'Thema 3: Wonen',
+                lessons: [
+                    { number: '3.1', title: 'Het huis' },
+                    { number: '3.2', title: 'Ik zeg, wij zeggen...' },
+                    { number: '3.3', title: 'De kamers' },
+                    { number: '3.4', title: 'Ik wil me graag voorstellen' },
+                    { number: '3.5', title: 'De meubels' },
+                    { number: '3.6', title: 'Ik woon... – ik spreek...' },
+                    { number: '3.7', title: 'De kleuren' },
+                    { number: '3.8', title: 'De buurt' },
+                    { number: '3.9', title: 'Eerste, tweede, derde' },
+                    { number: '3.10', title: 'Te huur' },
+                    { number: '3.11', title: 'Ik schrijf... – ik kies...' },
+                    { number: '3.12', title: 'Kazem is de sleutel vergeten' },
+                    { number: '3.13', title: 'Zinnen maken (1)' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 3' }
+                ]
+            },
+            {
+                name: 'Thema 4: Eten en drinken',
+                lessons: [
+                    { number: '4.1', title: 'Boodschappen doen' },
+                    { number: '4.2', title: 'Ik kom... – ik ga...' },
+                    { number: '4.3', title: 'Ontbijt, lunch en avondeten' },
+                    { number: '4.4', title: 'Soep koken' },
+                    { number: '4.5', title: 'Aan tafel!' },
+                    { number: '4.6', title: 'Woorden met -ig' },
+                    { number: '4.7', title: 'Wat vind je lekker?' },
+                    { number: '4.8', title: 'Vragen maken (1)' },
+                    { number: '4.9', title: 'Appeltaart maken' },
+                    { number: '4.10', title: 'De euro' },
+                    { number: '4.11', title: 'Vragen maken (2)' },
+                    { number: '4.12', title: 'Op de markt' },
+                    { number: '4.13', title: 'Van € 1,50 voor € 0,99!' },
+                    { number: '4.14', title: 'Su-per-markt' },
+                    { number: '4.15', title: 'In de supermarkt' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 4' }
+                ]
+            },
+            {
+                name: 'Thema 5: De dokter',
+                lessons: [
+                    { number: '5.1', title: 'Hoofd, schouders, knie en teen' },
+                    { number: '5.2', title: 'Schou-der' },
+                    { number: '5.3', title: 'Oren, ogen en neus' },
+                    { number: '5.4', title: 'Voet – voeten, lip – lippen' },
+                    { number: '5.5', title: 'Een afspraak maken' },
+                    { number: '5.6', title: 'Been – benen, huis – huizen' },
+                    { number: '5.7', title: 'Naar de dokter' },
+                    { number: '5.8', title: 'Jij of u?' },
+                    { number: '5.9', title: 'Wat zijn uw klachten?' },
+                    { number: '5.10', title: 'Dokter – dokters' },
+                    { number: '5.11', title: 'Woorden met oor, eer of eur' },
+                    { number: '5.12', title: 'Naar de apotheek' },
+                    { number: '5.13', title: 'Waarom?' },
+                    { number: '5.14', title: 'Bij de tandarts' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 5' }
+                ]
+            },
+            {
+                name: 'Thema 6: De kleren',
+                lessons: [
+                    { number: '6.1', title: 'De jas, de broek, de schoenen' },
+                    { number: '6.2', title: 'De en het' },
+                    { number: '6.3', title: 'Kleding kopen' },
+                    { number: '6.4', title: 'Woorden met ooi, aai of oei' },
+                    { number: '6.5', title: 'Wat draagt zij?' },
+                    { number: '6.6', title: 'Welk? Welke?' },
+                    { number: '6.7', title: 'Welke sieraden draagt zij?' },
+                    { number: '6.8', title: 'De rok is kapot' },
+                    { number: '6.9', title: 'Ik wil, jij wil...' },
+                    { number: '6.10', title: 'De tijd' },
+                    { number: '6.11', title: 'Is de winkel open?' },
+                    { number: '6.12', title: 'Hoe laat is het? (1)' },
+                    { number: '6.13', title: 'Duizend, miljoen, miljard' },
+                    { number: '6.14', title: 'Kleren wassen' },
+                    { number: '6.15', title: 'Hoe laat is het? (2)' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 6' }
+                ]
+            },
+            {
+                name: 'Thema 7: Reizen',
+                lessons: [
+                    { number: '7.1', title: 'Ik ga op reis' },
+                    { number: '7.2', title: 'Hoe?' },
+                    { number: '7.3', title: 'Regels in het verkeer' },
+                    { number: '7.4', title: 'Ik kan… – ik mag…' },
+                    { number: '7.5', title: 'De kaart van Nederland' },
+                    { number: '7.6', title: 'Op de doos, achter de doos…' },
+                    { number: '7.7', title: 'In de file' },
+                    { number: '7.8', title: 'Waar is het station?' },
+                    { number: '7.9', title: 'Woorden opzoeken' },
+                    { number: '7.10', title: 'Voor het eten, op donderdag…' },
+                    { number: '7.11', title: 'Op het station' },
+                    { number: '7.12', title: 'Mijn auto, jouw auto…' },
+                    { number: '7.13', title: 'Met de bus' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 7' }
+                ]
+            },
+            {
+                name: 'Thema 8: Vrije tijd',
+                lessons: [
+                    { number: '8.1', title: 'De boerderij' },
+                    { number: '8.2', title: 'Woorden leren' },
+                    { number: '8.3', title: 'Voetbalclub Groen Gras' },
+                    { number: '8.4', title: 'Zinnen maken (2)' },
+                    { number: '8.5', title: 'Wat is je hobby?' },
+                    { number: '8.6', title: 'Een formulier invullen' },
+                    { number: '8.7', title: 'De broek… – het paard…' },
+                    { number: '8.8', title: 'Wat doe jij in het weekend?' },
+                    { number: '8.9', title: 'Geen of niet' },
+                    { number: '8.10', title: 'Op vakantie' },
+                    { number: '8.11', title: 'Ik begrijp het niet' },
+                    { number: '8.12', title: 'Dit boek is hier. Dat boek…' },
+                    { number: '8.13', title: 'Vrienden' },
+                    { number: '—', title: 'Herhalingsopdrachten thema 8' }
+                ]
+            }
+        ];
+        
+        let currentStudent = '';
+        
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+        
+        function getTodayDate() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[char];
+            });
+        }
+
+        function formatDateObject(date) {
+            if (!date) return '';
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function normalizeDateInput(value) {
+            const rawValue = String(value || '').trim();
+            let cleanedValue = rawValue.replace(/[./\s]+/g, '-');
+            if (/^\d{8}$/.test(rawValue)) {
+                cleanedValue = rawValue.startsWith('19') || rawValue.startsWith('20')
+                    ? `${rawValue.slice(0, 4)}-${rawValue.slice(4, 6)}-${rawValue.slice(6, 8)}`
+                    : `${rawValue.slice(0, 2)}-${rawValue.slice(2, 4)}-${rawValue.slice(4, 8)}`;
+            }
+            if (!cleanedValue) return '';
+
+            const parts = cleanedValue.split('-');
+            if (parts.length !== 3) return null;
+
+            const [first, second, third] = parts;
+            const firstNumber = Number(first);
+            const secondNumber = Number(second);
+            const thirdNumber = Number(third);
+
+            if ([firstNumber, secondNumber, thirdNumber].some(part => Number.isNaN(part))) return null;
+
+            const isYearFirst = first.length === 4;
+            const year = isYearFirst ? firstNumber : thirdNumber;
+            const month = isYearFirst ? secondNumber : secondNumber;
+            const day = isYearFirst ? thirdNumber : firstNumber;
+
+            if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+            const date = new Date(year, month - 1, day);
+            const isRealDate = date.getFullYear() === year &&
+                date.getMonth() === month - 1 &&
+                date.getDate() === day;
+
+            if (!isRealDate) return null;
+
+            return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+
+        function parseDateString(dateString) {
+            const normalizedDate = normalizeDateInput(dateString);
+            if (!normalizedDate) return null;
+            const [year, month, day] = normalizedDate.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }
+
+        function formatDateForInput(dateString) {
+            const date = parseDateString(dateString);
+            return date ? formatDateObject(date) : '';
+        }
+
+        function addDays(date, days) {
+            const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            copy.setDate(copy.getDate() + days);
+            return copy;
+        }
+
+        function getNormalizedPlanning(planning) {
+            return {
+                startDate: planning?.startDate || '',
+                weeks: planning?.weeks || {}
+            };
+        }
+
+        function getPlanning(student = currentStudent) {
+            const data = getStudentData(student);
+            return getNormalizedPlanning(data[PLANNING_KEY]);
+        }
+
+        function savePlanning(student, planning) {
+            if (!student) return;
+            const data = getStudentData(student);
+            data[PLANNING_KEY] = getNormalizedPlanning(planning);
+            saveStudentData(student, data);
+            savePlanningToFirebase(student, data[PLANNING_KEY]);
+        }
+
+        function getWeekStatus(planning, weekNumber) {
+            return planning.weeks?.[weekNumber]?.status || 'planned';
+        }
+
+        function getStatusLabel(status) {
+            return PLANNING_STATUS_OPTIONS.find(option => option.value === status)?.label || 'Gepland';
+        }
+
+        function getShortLessonNumber(lesson) {
+            if (!lesson) return '';
+            if (lesson.title.toLowerCase().includes('herhalingsopdrachten')) return 'herhaling';
+            return lesson.number;
+        }
+
+        function getLessonRangeForThemeWeek(themeIdx, themeWeek) {
+            const lessons = themes[themeIdx]?.lessons || [];
+            if (lessons.length === 0) {
+                return { startIndex: 0, endIndex: 0, label: 'Geen lessen' };
+            }
+
+            const startIndex = Math.floor((themeWeek - 1) * lessons.length / THEME_WEEKS);
+            const endIndex = Math.min(
+                lessons.length - 1,
+                Math.max(startIndex, Math.floor(themeWeek * lessons.length / THEME_WEEKS) - 1)
+            );
+            const startLesson = lessons[startIndex];
+            const endLesson = lessons[endIndex];
+            const startNumber = getShortLessonNumber(startLesson);
+            const endNumber = getShortLessonNumber(endLesson);
+            const label = startIndex === endIndex
+                ? `${startNumber}: ${startLesson.title}`
+                : `${startNumber} t/m ${endNumber}`;
+
+            return { startIndex, endIndex, label };
+        }
+
+        function buildPlanningRows(planning) {
+            const normalizedPlanning = getNormalizedPlanning(planning);
+            const startDate = parseDateString(normalizedPlanning.startDate);
+            if (!startDate) return [];
+
+            const rows = [];
+            let calendarWeek = 1;
+            let workingWeek = 1;
+            const maxCalendarWeeks = SCHOOL_YEAR_WEEKS + MAX_EXTRA_PLANNING_WEEKS;
+
+            while ((calendarWeek <= SCHOOL_YEAR_WEEKS || workingWeek <= SCHOOL_YEAR_WEEKS) && calendarWeek <= maxCalendarWeeks) {
+                const status = getWeekStatus(normalizedPlanning, calendarWeek);
+                const isNonWorking = NON_WORKING_STATUSES.includes(status);
+                const weekStartDate = addDays(startDate, (calendarWeek - 1) * 7);
+                const weekEndDate = addDays(weekStartDate, 6);
+                const row = {
+                    calendarWeek,
+                    workingWeek: null,
+                    status,
+                    isNonWorking,
+                    isCatchUp: calendarWeek > SCHOOL_YEAR_WEEKS,
+                    startDate: weekStartDate,
+                    endDate: weekEndDate,
+                    dateRange: `${formatDateObject(weekStartDate)} t/m ${formatDateObject(weekEndDate)}`,
+                    themeIdx: null,
+                    themeWeek: null,
+                    themeName: '',
+                    target: '',
+                    startLessonIndex: null,
+                    endLessonIndex: null
+                };
+
+                if (isNonWorking) {
+                    row.target = `Geen opdrachten: ${getStatusLabel(status).toLowerCase()}`;
+                } else if (workingWeek <= SCHOOL_YEAR_WEEKS) {
+                    const themeIdx = Math.floor((workingWeek - 1) / THEME_WEEKS);
+                    const themeWeek = ((workingWeek - 1) % THEME_WEEKS) + 1;
+                    const lessonRange = getLessonRangeForThemeWeek(themeIdx, themeWeek);
+                    row.workingWeek = workingWeek;
+                    row.themeIdx = themeIdx;
+                    row.themeWeek = themeWeek;
+                    row.themeName = themes[themeIdx]?.name || '';
+                    row.target = `Week ${themeWeek}/5: ${lessonRange.label}`;
+                    row.startLessonIndex = lessonRange.startIndex;
+                    row.endLessonIndex = lessonRange.endIndex;
+                    workingWeek++;
+                } else {
+                    row.target = 'TaalCompleet klaar: herhalen of verdiepen';
+                }
+
+                rows.push(row);
+                calendarWeek++;
+            }
+
+            return rows;
+        }
+
+        function getLessonPlanInfo(themeIdx, lessonIdx, planning) {
+            if (!planning?.startDate) return '';
+            const row = buildPlanningRows(planning).find(planningRow => {
+                return planningRow.themeIdx === themeIdx &&
+                    lessonIdx >= planningRow.startLessonIndex &&
+                    lessonIdx <= planningRow.endLessonIndex;
+            });
+
+            return row ? `Plan: week ${row.calendarWeek} (${row.dateRange})` : 'Plan: na week 40';
+        }
+
+        function renderStatusOptions(selectedStatus) {
+            return PLANNING_STATUS_OPTIONS.map(option => {
+                const selected = option.value === selectedStatus ? 'selected' : '';
+                return `<option value="${option.value}" ${selected}>${option.label}</option>`;
+            }).join('');
+        }
+
+        function isThemeCompleted(themeIdx, studentData) {
+            return themes[themeIdx].lessons.every((lesson, lessonIdx) => {
+                return studentData[themeIdx]?.[lessonIdx]?.book && studentData[themeIdx]?.[lessonIdx]?.online;
+            });
+        }
+
+        function getThemeCompletionTimestamp(themeIdx, studentData) {
+            if (!isThemeCompleted(themeIdx, studentData)) return null;
+
+            return themes[themeIdx].lessons.reduce((latestTimestamp, lesson, lessonIdx) => {
+                const timestamp = studentData[themeIdx]?.[lessonIdx]?.timestamp || 0;
+                return Math.max(latestTimestamp, timestamp);
+            }, 0);
+        }
+
+        function getThemePlanningRows(themeIdx, planning) {
+            const allRows = buildPlanningRows(planning);
+            const studyRows = allRows.filter(row => row.themeIdx === themeIdx);
+            if (studyRows.length === 0) {
+                return { allRows, studyRows, visibleRows: [] };
+            }
+
+            const firstWeek = studyRows[0].calendarWeek;
+            const lastWeek = studyRows[studyRows.length - 1].calendarWeek;
+            const visibleRows = allRows.filter(row => {
+                return row.calendarWeek >= firstWeek && row.calendarWeek <= lastWeek;
+            });
+
+            return { allRows, studyRows, visibleRows };
+        }
+
+        function getThemePlanningState(themeIdx, planning, studentData) {
+            const { studyRows } = getThemePlanningRows(themeIdx, planning);
+            if (!planning?.startDate || studyRows.length === 0) {
+                return {
+                    className: 'unknown',
+                    label: 'Kies een startdatum',
+                    detail: 'Er is nog geen planning voor dit thema.'
+                };
+            }
+
+            const firstRow = studyRows[0];
+            const lastRow = studyRows[studyRows.length - 1];
+            const today = new Date();
+            const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const endOfLastDay = new Date(lastRow.endDate.getFullYear(), lastRow.endDate.getMonth(), lastRow.endDate.getDate(), 23, 59, 59, 999);
+            const completed = isThemeCompleted(themeIdx, studentData);
+            const completedTimestamp = getThemeCompletionTimestamp(themeIdx, studentData);
+
+            if (completed && completedTimestamp && completedTimestamp > endOfLastDay.getTime()) {
+                return {
+                    className: 'outside',
+                    label: 'Buiten de planning',
+                    detail: `Afgerond na ${formatDateObject(lastRow.endDate)}.`
+                };
+            }
+
+            if (!completed && todayOnly > lastRow.endDate) {
+                return {
+                    className: 'outside',
+                    label: 'Buiten de planning',
+                    detail: `De geplande einddatum was ${formatDateObject(lastRow.endDate)}.`
+                };
+            }
+
+            if (todayOnly < firstRow.startDate) {
+                return {
+                    className: 'inside',
+                    label: 'Binnen de planning',
+                    detail: `Dit thema start op ${formatDateObject(firstRow.startDate)}.`
+                };
+            }
+
+            return {
+                className: 'inside',
+                label: 'Binnen de planning',
+                detail: completed ? 'Dit thema is op tijd afgerond.' : `Gepland tot en met ${formatDateObject(lastRow.endDate)}.`
+            };
+        }
+
+        function renderThemePlanningPanel(themeIdx, theme, planning, studentData) {
+            const normalizedPlanning = getNormalizedPlanning(planning);
+            const { studyRows, visibleRows } = getThemePlanningRows(themeIdx, normalizedPlanning);
+            const state = getThemePlanningState(themeIdx, normalizedPlanning, studentData);
+            const themeNumber = themeIdx + 1;
+
+            if (!normalizedPlanning.startDate || studyRows.length === 0) {
+                return `
+                    <div class="theme-planning-panel">
+                        <div class="theme-planning-header">
+                            <div>
+                                <h3>Planning Thema ${themeNumber}</h3>
+                                <div class="theme-planning-period">${escapeHtml(theme.name)}</div>
+                            </div>
+                        </div>
+                        <div class="planning-state-bar">
+                            <div class="planning-state-fill unknown">Kies een startdatum</div>
+                        </div>
+                        <div class="planning-empty">
+                            Kies bovenaan de startdatum van de leerling. Daarna verschijnt hier de planning voor dit thema.
+                        </div>
+                    </div>
+                `;
+            }
+
+            const firstRow = studyRows[0];
+            const lastRow = studyRows[studyRows.length - 1];
+            const completedCount = theme.lessons.filter((lesson, lessonIdx) => {
+                return studentData[themeIdx]?.[lessonIdx]?.book && studentData[themeIdx]?.[lessonIdx]?.online;
+            }).length;
+            const nonWorkingCount = visibleRows.filter(row => row.isNonWorking).length;
+            const rowsHtml = visibleRows.map(row => {
+                const weekData = normalizedPlanning.weeks?.[row.calendarWeek] || {};
+                const note = weekData.note || '';
+                const rowClasses = [
+                    row.isNonWorking ? `status-${row.status}` : '',
+                    row.isCatchUp ? 'week-catchup' : ''
+                ].filter(Boolean).join(' ');
+                const studyWeekText = row.workingWeek ? `Studieweek ${row.workingWeek}/40` : 'Telt niet mee';
+                const targetText = row.isNonWorking ? row.target : `${row.target}`;
+
+                return `
+                    <tr class="${rowClasses}">
+                        <td><strong>${row.calendarWeek}</strong></td>
+                        <td>${row.dateRange}</td>
+                        <td class="planning-target">
+                            ${escapeHtml(targetText)}
+                            <div class="planning-muted">${studyWeekText}</div>
+                        </td>
+                        <td>
+                            <select class="planning-status status-${row.status}" onchange="updatePlanningWeek(${row.calendarWeek}, 'status', this.value)">
+                                ${renderStatusOptions(row.status)}
+                            </select>
+                        </td>
+                        <td>
+                            <input class="planning-note" type="text" value="${escapeHtml(note)}" placeholder="Bijv. vakantie of ziek" onchange="updatePlanningWeek(${row.calendarWeek}, 'note', this.value)">
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            return `
+                <div class="theme-planning-panel">
+                    <div class="theme-planning-header">
+                        <div>
+                            <h3>Planning Thema ${themeNumber}</h3>
+                            <div class="theme-planning-period">${escapeHtml(theme.name)}</div>
+                        </div>
+                        <div class="theme-planning-period">
+                            Week ${firstRow.calendarWeek} t/m ${lastRow.calendarWeek}<br>
+                            ${formatDateObject(firstRow.startDate)} t/m ${formatDateObject(lastRow.endDate)}
+                        </div>
+                    </div>
+                    <div class="planning-state-bar">
+                        <div class="planning-state-fill ${state.className}">${state.label}</div>
+                    </div>
+                    <div class="theme-planning-period">${escapeHtml(state.detail)}</div>
+                    <div class="theme-planning-meta">
+                        <div>
+                            <span>Opdrachten klaar</span>
+                            <strong>${completedCount}/${theme.lessons.length}</strong>
+                        </div>
+                        <div>
+                            <span>Geplande weken</span>
+                            <strong>${studyRows.length} weken</strong>
+                        </div>
+                        <div>
+                            <span>Vakantie/afwezig</span>
+                            <strong>${nonWorkingCount} week/weken</strong>
+                        </div>
+                    </div>
+                    <div class="planning-table-wrapper">
+                        <table class="planning-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Week</th>
+                                    <th style="width: 170px;">Datum</th>
+                                    <th>Doel</th>
+                                    <th style="width: 145px;">Status</th>
+                                    <th style="width: 210px;">Notitie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPlanningPanel(planning) {
+            const normalizedPlanning = getNormalizedPlanning(planning);
+            const rows = buildPlanningRows(normalizedPlanning);
+            const missedRows = rows.filter(row => row.isNonWorking);
+            const lastStudyRow = rows.find(row => row.workingWeek === SCHOOL_YEAR_WEEKS);
+            const startDisplay = normalizedPlanning.startDate
+                ? formatDateObject(parseDateString(normalizedPlanning.startDate))
+                : 'Nog niet gekozen';
+            const endDisplay = lastStudyRow ? formatDateObject(lastStudyRow.endDate) : 'Nog niet bekend';
+
+            return `
+                <div class="planning-panel">
+                    <div class="planning-header" style="margin-bottom: 0;">
+                        <div>
+                            <h3>Start planning</h3>
+                            <p>De planning staat nu per thema direct boven de aftekenlijst. Vakantie en afwezigheid schuiven de lesweken automatisch mee.</p>
+                        </div>
+                        <label class="planning-start">
+                            Startdatum leerling
+                            <input class="planning-date-input" type="text" inputmode="numeric" maxlength="10" placeholder="dd-mm-jjjj" value="${escapeHtml(formatDateForInput(normalizedPlanning.startDate))}" onchange="updatePlanningStartDate(this.value)">
+                            <span class="planning-muted">Bijvoorbeeld 24-08-2026</span>
+                        </label>
+                    </div>
+                    <div class="planning-summary" style="margin-top: 18px; margin-bottom: 0;">
+                        <div class="planning-card">
+                            <span>Startdatum</span>
+                            <strong>${startDisplay}</strong>
+                        </div>
+                        <div class="planning-card">
+                            <span>Verwachte einddatum</span>
+                            <strong>${endDisplay}</strong>
+                        </div>
+                        <div class="planning-card">
+                            <span>Vakantie/afwezig</span>
+                            <strong>${missedRows.length} week/weken</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updatePlanningStartDate(value) {
+            if (!currentStudent) return;
+            const normalizedDate = normalizeDateInput(value);
+            if (normalizedDate === null) {
+                alert('Gebruik een datum zoals 24-08-2026.');
+                renderStudentProgress();
+                return;
+            }
+
+            const planning = getPlanning(currentStudent);
+            planning.startDate = normalizedDate;
+            savePlanning(currentStudent, planning);
+            renderStudentProgress();
+        }
+
+        function updatePlanningWeek(weekNumber, field, value) {
+            if (!currentStudent) return;
+            const planning = getPlanning(currentStudent);
+            if (!planning.weeks) planning.weeks = {};
+            if (!planning.weeks[weekNumber]) planning.weeks[weekNumber] = {};
+            planning.weeks[weekNumber][field] = value;
+            savePlanning(currentStudent, planning);
+            if (field === 'status') {
+                renderStudentProgress();
+            }
+        }
+        
+        function getStudentsList() {
+            const stored = localStorage.getItem('studentsList');
+            return stored ? JSON.parse(stored) : [];
+        }
+        
+        function saveStudentsList(students) {
+            localStorage.setItem('studentsList', JSON.stringify(students));
+        }
+        
+        function addStudent() {
+            const input = document.getElementById('newStudentName');
+            const name = input.value.trim();
+            
+            if (!name) {
+                alert('Vul een naam in voor de nieuwe leerling!');
+                return;
+            }
+            
+            const students = getStudentsList();
+            
+            if (students.length >= MAX_STUDENTS) {
+                alert(`Je kunt maximaal ${MAX_STUDENTS} leerlingen toevoegen!`);
+                return;
+            }
+            
+            if (students.includes(name)) {
+                alert('Deze leerling bestaat al!');
+                return;
+            }
+            
+            students.push(name);
+            students.sort();
+            saveStudentsList(students);
+            
+            input.value = '';
+            updateStudentSelector();
+            
+            // Selecteer de nieuwe leerling automatisch
+            document.getElementById('studentSelect').value = name;
+            currentStudent = name;
+            renderStudentProgress();
+            
+            alert(`Leerling "${name}" succesvol toegevoegd!`);
+        }
+        
+        function renameStudent() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling!');
+                return;
+            }
+            
+            const newName = prompt(`Nieuwe naam voor "${currentStudent}":`, currentStudent);
+            
+            if (!newName || newName.trim() === '') {
+                return;
+            }
+            
+            const trimmedName = newName.trim();
+            
+            if (trimmedName === currentStudent) {
+                return; // Geen wijziging
+            }
+            
+            const students = getStudentsList();
+            
+            if (students.includes(trimmedName)) {
+                alert('Een leerling met deze naam bestaat al!');
+                return;
+            }
+            
+            const oldName = currentStudent;
+            
+            // Haal data van oude naam op
+            const data = getStudentData(currentStudent);
+            
+            // Verwijder oude naam
+            const index = students.indexOf(currentStudent);
+            if (index > -1) {
+                students.splice(index, 1);
+            }
+            localStorage.removeItem(`student_${currentStudent}`);
+            
+            // Voeg nieuwe naam toe
+            students.push(trimmedName);
+            students.sort();
+            saveStudentsList(students);
+            saveStudentData(trimmedName, data);
+            
+            // Update in Firebase
+            renameStudentInFirebase(oldName, trimmedName);
+            
+            // Update selectie
+            currentStudent = trimmedName;
+            updateStudentSelector();
+            document.getElementById('studentSelect').value = trimmedName;
+            renderStudentProgress();
+            
+            alert(`Naam gewijzigd naar "${trimmedName}"!`);
+        }
+        
+        function deleteStudent() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling om te verwijderen!');
+                return;
+            }
+            
+            if (confirm(`Weet je zeker dat je "${currentStudent}" wilt verwijderen?\n\nDit verwijdert ook alle voortgang van deze leerling!`)) {
+                const students = getStudentsList();
+                const index = students.indexOf(currentStudent);
+                
+                if (index > -1) {
+                    students.splice(index, 1);
+                    saveStudentsList(students);
+                }
+                
+                // Verwijder ook de data van deze leerling
+                localStorage.removeItem(`student_${currentStudent}`);
+                
+                // Verwijder uit Firebase
+                deleteStudentFromFirebase(currentStudent);
+                
+                currentStudent = '';
+                updateStudentSelector();
+                showWelcomeMessage();
+                
+                alert('Leerling succesvol verwijderd!');
+            }
+        }
+        
+        function updateStudentSelector() {
+            const select = document.getElementById('studentSelect');
+            const students = getStudentsList();
+            const currentValue = select.value;
+            
+            // Bewaar huidige selectie
+            select.innerHTML = '<option value="">-- Kies een leerling --</option>';
+            
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student;
+                option.textContent = student;
+                select.appendChild(option);
+            });
+            
+            // Herstel selectie als deze nog bestaat
+            if (students.includes(currentValue)) {
+                select.value = currentValue;
+            }
+            
+            // Update student count display
+            updateStudentCount();
+        }
+        
+        function updateStudentCount() {
+            const students = getStudentsList();
+            const count = students.length;
+            const remaining = MAX_STUDENTS - count;
+            
+            // Je kunt hier eventueel een teller tonen
+            console.log(`${count} leerlingen, ${remaining} plekken beschikbaar`);
+        }
+        
+        function initStudents() {
+            const select = document.getElementById('studentSelect');
+            
+            // Laad bestaande leerlingen
+            updateStudentSelector();
+            
+            select.addEventListener('change', function() {
+                currentStudent = this.value;
+                if (currentStudent) {
+                    renderStudentProgress();
+                } else {
+                    showWelcomeMessage();
+                }
+            });
+            
+            // Enter key support voor nieuwe leerling toevoegen
+            document.getElementById('newStudentName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addStudent();
+                }
+            });
+        }
+        
+        function showWelcomeMessage() {
+            const students = getStudentsList();
+            const count = students.length;
+            const remaining = MAX_STUDENTS - count;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="student-info">
+                    <h2>👋 Welkom bij de Aftekenlijst!</h2>
+                    <p style="margin-bottom: 15px;">Begin met het toevoegen van je leerlingen om hun voortgang bij te houden.</p>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <h3 style="color: #667eea; margin-bottom: 10px;">📊 Statistieken</h3>
+                        <p style="margin: 5px 0;"><strong>Huidige leerlingen:</strong> ${count} van ${MAX_STUDENTS}</p>
+                        <p style="margin: 5px 0;"><strong>Beschikbare plekken:</strong> ${remaining}</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <h3 style="color: #667eea; margin-bottom: 10px;">💡 Hoe te gebruiken</h3>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li>Voeg leerlingen toe met de "Voeg Leerling Toe" knop</li>
+                            <li>Selecteer een leerling uit het dropdown menu</li>
+                            <li>Vink af welke lessen zijn afgerond (boek en/of online)</li>
+                            <li>Je voortgang wordt automatisch opgeslagen</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getStudentData(student) {
+            const key = `student_${student}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : {};
+        }
+        
+        function getLastCompletedLesson(studentData) {
+            let lastCompleted = null;
+            let lastTimestamp = 0;
+            
+            themes.forEach((theme, themeIdx) => {
+                theme.lessons.forEach((lesson, lessonIdx) => {
+                    if (studentData[themeIdx]?.[lessonIdx]?.book && 
+                        studentData[themeIdx]?.[lessonIdx]?.online) {
+                        const timestamp = studentData[themeIdx][lessonIdx].timestamp || 0;
+                        if (timestamp > lastTimestamp) {
+                            lastTimestamp = timestamp;
+                            lastCompleted = { themeIdx, lessonIdx };
+                        }
+                    }
+                });
+            });
+            
+            return lastCompleted;
+        }
+        
+        function saveStudentData(student, data) {
+            const key = `student_${student}`;
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+        
+        function updateCheckbox(themeIndex, lessonIndex, type) {
+            const checkboxId = `${currentStudent}_${themeIndex}_${lessonIndex}_${type}`;
+            const checkbox = document.getElementById(checkboxId);
+            const data = getStudentData(currentStudent);
+            
+            if (!data[themeIndex]) data[themeIndex] = {};
+            if (!data[themeIndex][lessonIndex]) data[themeIndex][lessonIndex] = {};
+            
+            data[themeIndex][lessonIndex][type] = checkbox.checked;
+            
+            // Als beide (boek EN laptop) zijn afgevinkt, sla timestamp en datum op
+            if (data[themeIndex][lessonIndex].book && data[themeIndex][lessonIndex].online) {
+                if (!data[themeIndex][lessonIndex].timestamp) {
+                    // Eerste keer afgerond - sla huidige datum op
+                    data[themeIndex][lessonIndex].timestamp = Date.now();
+                    data[themeIndex][lessonIndex].completedDate = getTodayDate();
+                }
+            } else {
+                // Als een van beide wordt uitgevinkt, verwijder de timestamp en datum
+                delete data[themeIndex][lessonIndex].timestamp;
+                delete data[themeIndex][lessonIndex].completedDate;
+            }
+            
+            saveStudentData(currentStudent, data);
+            
+            // Sla ook op naar Firebase
+            saveToFirebase(currentStudent, themeIndex, lessonIndex, data[themeIndex][lessonIndex]);
+            
+            // Herlaad de weergave om de sorteerorde bij te werken
+            renderStudentProgress();
+            updateProgressSummary();
+        }
+        
+        function calculateProgress() {
+            const data = getStudentData(currentStudent);
+            let totalLessons = 0;
+            let bookCompleted = 0;
+            let onlineCompleted = 0;
+            
+            themes.forEach((theme, themeIdx) => {
+                theme.lessons.forEach((lesson, lessonIdx) => {
+                    totalLessons++;
+                    if (data[themeIdx] && data[themeIdx][lessonIdx]) {
+                        if (data[themeIdx][lessonIdx].book) bookCompleted++;
+                        if (data[themeIdx][lessonIdx].online) onlineCompleted++;
+                    }
+                });
+            });
+            
+            return {
+                totalLessons,
+                bookCompleted,
+                onlineCompleted,
+                bookPercentage: Math.round((bookCompleted / totalLessons) * 100),
+                onlinePercentage: Math.round((onlineCompleted / totalLessons) * 100),
+                totalPercentage: Math.round(((bookCompleted + onlineCompleted) / (totalLessons * 2)) * 100)
+            };
+        }
+        
+        function updateProgressSummary() {
+            const progress = calculateProgress();
+            const summaryDiv = document.querySelector('.progress-summary');
+            if (summaryDiv) {
+                summaryDiv.innerHTML = `
+                    <div class="progress-card">
+                        <h4>📖 Boek Afgerond</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress.bookPercentage}%">
+                                ${progress.bookPercentage}%
+                            </div>
+                        </div>
+                        <p style="margin-top: 8px; color: #6c757d; font-size: 0.9em;">
+                            ${progress.bookCompleted} van ${progress.totalLessons} lessen
+                        </p>
+                    </div>
+                    <div class="progress-card">
+                        <h4>💻 Laptop Afgerond</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress.onlinePercentage}%">
+                                ${progress.onlinePercentage}%
+                            </div>
+                        </div>
+                        <p style="margin-top: 8px; color: #6c757d; font-size: 0.9em;">
+                            ${progress.onlineCompleted} van ${progress.totalLessons} lessen
+                        </p>
+                    </div>
+                    <div class="progress-card">
+                        <h4>✅ Totale Voortgang</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress.totalPercentage}%">
+                                ${progress.totalPercentage}%
+                            </div>
+                        </div>
+                        <p style="margin-top: 8px; color: #6c757d; font-size: 0.9em;">
+                            ${progress.bookCompleted + progress.onlineCompleted} van ${progress.totalLessons * 2} items
+                        </p>
+                    </div>
+                `;
+            }
+        }
+        
+        function toggleTheme(themeIndex) {
+            const content = document.getElementById(`theme-content-${themeIndex}`);
+            const header = document.getElementById(`theme-header-${themeIndex}`);
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+        
+        function renderStudentProgress() {
+            const data = getStudentData(currentStudent);
+            const planning = getPlanning(currentStudent);
+            const progress = calculateProgress();
+            
+            let activeThemesHtml = '';
+            let completedThemesHtml = '';
+            const completedThemes = [];
+            const activeThemes = [];
+            
+            // Verdeel thema's in actief en afgerond
+            themes.forEach((theme, themeIdx) => {
+                // Bereken voortgang voor dit thema
+                const themeLessons = theme.lessons.length;
+                let themeBookCompleted = 0;
+                let themeOnlineCompleted = 0;
+                let latestCompletionDate = null;
+                
+                theme.lessons.forEach((lesson, lessonIdx) => {
+                    if (data[themeIdx]?.[lessonIdx]?.book) themeBookCompleted++;
+                    if (data[themeIdx]?.[lessonIdx]?.online) themeOnlineCompleted++;
+                    
+                    // Vind de laatst afgeronde les voor de datum
+                    if (data[themeIdx]?.[lessonIdx]?.book && 
+                        data[themeIdx]?.[lessonIdx]?.online && 
+                        data[themeIdx]?.[lessonIdx]?.completedDate) {
+                        if (!latestCompletionDate) {
+                            latestCompletionDate = data[themeIdx][lessonIdx].completedDate;
+                        }
+                    }
+                });
+                
+                const isThemeCompleted = (themeBookCompleted === themeLessons && themeOnlineCompleted === themeLessons);
+                
+                if (isThemeCompleted) {
+                    completedThemes.push({
+                        theme,
+                        themeIdx,
+                        themeLessons,
+                        completedDate: latestCompletionDate
+                    });
+                } else {
+                    activeThemes.push({
+                        theme,
+                        themeIdx,
+                        themeLessons,
+                        themeBookCompleted,
+                        themeOnlineCompleted
+                    });
+                }
+            });
+            
+            // Render actieve thema's
+            let firstIncompleteThemeIdx = null;
+            
+            // Vind het eerste thema met incomplete lessen
+            for (let i = 0; i < activeThemes.length; i++) {
+                const { themeIdx } = activeThemes[i];
+                const hasIncompleteLessons = themes[themeIdx].lessons.some((lesson, lessonIdx) => {
+                    return !(data[themeIdx]?.[lessonIdx]?.book && data[themeIdx]?.[lessonIdx]?.online);
+                });
+                
+                if (hasIncompleteLessons) {
+                    firstIncompleteThemeIdx = themeIdx;
+                    break;
+                }
+            }
+            
+            activeThemes.forEach(({ theme, themeIdx, themeLessons, themeBookCompleted, themeOnlineCompleted }) => {
+                const themeBookPercentage = Math.round((themeBookCompleted / themeLessons) * 100);
+                const themeOnlinePercentage = Math.round((themeOnlineCompleted / themeLessons) * 100);
+                const themeTotalPercentage = Math.round(((themeBookCompleted + themeOnlineCompleted) / (themeLessons * 2)) * 100);
+                
+                // Verdeel lessen in afgerond en niet-afgerond
+                const completedLessons = [];
+                const incompleteLessons = [];
+                let currentLesson = null;
+                
+                theme.lessons.forEach((lesson, lessonIdx) => {
+                    const lessonData = {
+                        lesson,
+                        lessonIdx,
+                        bookChecked: data[themeIdx]?.[lessonIdx]?.book ? 'checked' : '',
+                        onlineChecked: data[themeIdx]?.[lessonIdx]?.online ? 'checked' : '',
+                        timestamp: data[themeIdx]?.[lessonIdx]?.timestamp || 0,
+                        completedDate: data[themeIdx]?.[lessonIdx]?.completedDate || '',
+                        planLabel: getLessonPlanInfo(themeIdx, lessonIdx, planning)
+                    };
+                    
+                    if (data[themeIdx]?.[lessonIdx]?.book && data[themeIdx]?.[lessonIdx]?.online) {
+                        completedLessons.push(lessonData);
+                    } else {
+                        incompleteLessons.push(lessonData);
+                        if (currentLesson === null) {
+                            currentLesson = lessonData;
+                        }
+                    }
+                });
+                
+                completedLessons.sort((a, b) => b.timestamp - a.timestamp);
+                
+                // Bepaal of dit thema het huidige thema is (alleen het EERSTE thema met incomplete lessen)
+                const isCurrentTheme = (themeIdx === firstIncompleteThemeIdx);
+                const contentDisplay = isCurrentTheme ? 'block' : 'none';
+                const toggleIcon = isCurrentTheme ? '▼' : '▶';
+                
+                activeThemesHtml += `
+                    <div class="theme-container">
+                        ${renderThemePlanningPanel(themeIdx, theme, planning, data)}
+                        <div class="theme-section">
+                            <div class="theme-header" id="theme-header-${themeIdx}" onclick="toggleTheme(${themeIdx})">
+                                <div style="flex: 1;">
+                                    <div>Aftekenlijst ${theme.name}</div>
+                                    <div style="font-size: 0.85em; opacity: 0.9; margin-top: 5px; display: flex; gap: 15px; align-items: center;">
+                                        <span>📖 ${themeBookCompleted}/${themeLessons} (${themeBookPercentage}%)</span>
+                                        <span>💻 ${themeOnlineCompleted}/${themeLessons} (${themeOnlinePercentage}%)</span>
+                                        <span style="font-weight: 700;">Totaal: ${themeTotalPercentage}%</span>
+                                    </div>
+                                </div>
+                                <span class="toggle-icon">${toggleIcon}</span>
+                            </div>
+                            <div class="theme-content" id="theme-content-${themeIdx}" style="display: ${contentDisplay};">
+                                <table class="lessons-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 100px;">Les</th>
+                                            <th>Titel</th>
+                                            <th style="width: 120px; text-align: center;">📖 Boek</th>
+                                            <th style="width: 120px; text-align: center;">💻 Laptop</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                `;
+                
+                if (currentLesson) {
+                    activeThemesHtml += `
+                        <tr class="current-lesson-highlight" id="lesson-${themeIdx}-${currentLesson.lessonIdx}">
+                            <td class="lesson-number">${currentLesson.lesson.number}</td>
+                            <td class="lesson-title">
+                                ${currentLesson.lesson.title}
+                                <span class="current-lesson-badge">👉 NU</span>
+                                ${currentLesson.planLabel ? `<span class="plan-label">${currentLesson.planLabel}</span>` : ''}
+                            </td>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" 
+                                       class="custom-checkbox" 
+                                       id="${currentStudent}_${themeIdx}_${currentLesson.lessonIdx}_book"
+                                       onchange="updateCheckbox(${themeIdx}, ${currentLesson.lessonIdx}, 'book')"
+                                       ${currentLesson.bookChecked}>
+                            </td>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" 
+                                       class="custom-checkbox" 
+                                       id="${currentStudent}_${themeIdx}_${currentLesson.lessonIdx}_online"
+                                       onchange="updateCheckbox(${themeIdx}, ${currentLesson.lessonIdx}, 'online')"
+                                       ${currentLesson.onlineChecked}>
+                            </td>
+                        </tr>
+                    `;
+                    
+                    if (incompleteLessons.length > 1) {
+                        activeThemesHtml += `
+                            <tr style="background: #f8f9fa; height: 3px;">
+                                <td colspan="4" style="padding: 0;"></td>
+                            </tr>
+                        `;
+                    }
+                }
+                
+                incompleteLessons.forEach((lessonData, index) => {
+                    if (index === 0) return;
+                    
+                    activeThemesHtml += `
+                        <tr id="lesson-${themeIdx}-${lessonData.lessonIdx}">
+                            <td class="lesson-number">${lessonData.lesson.number}</td>
+                            <td class="lesson-title">
+                                ${lessonData.lesson.title}
+                                ${lessonData.planLabel ? `<span class="plan-label">${lessonData.planLabel}</span>` : ''}
+                            </td>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" 
+                                       class="custom-checkbox" 
+                                       id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_book"
+                                       onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'book')"
+                                       ${lessonData.bookChecked}>
+                            </td>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" 
+                                       class="custom-checkbox" 
+                                       id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_online"
+                                       onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'online')"
+                                       ${lessonData.onlineChecked}>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                activeThemesHtml += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                `;
+                
+                if (completedLessons.length > 0) {
+                    activeThemesHtml += `
+                        <div class="completed-section">
+                            <h3 style="color: #28a745; margin-bottom: 15px; font-size: 1.1em;">✅ Afgerond (${completedLessons.length})</h3>
+                            <table class="lessons-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 100px;">Les</th>
+                                        <th>Titel</th>
+                                        <th style="width: 120px; text-align: center;">📖 Boek</th>
+                                        <th style="width: 120px; text-align: center;">💻 Laptop</th>
+                                        <th style="width: 150px; text-align: center;">Datum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    completedLessons.forEach((lessonData, index) => {
+                        const isLatest = index === 0;
+                        const rowClass = isLatest ? 'completed-lesson latest' : 'completed-lesson';
+                        const badge = isLatest ? '<span class="completed-item-badge">LAATST</span>' : '';
+                        const displayDate = lessonData.completedDate || formatDate(lessonData.timestamp);
+                        
+                        activeThemesHtml += `
+                            <tr class="${rowClass}">
+                                <td class="lesson-number">${lessonData.lesson.number}</td>
+                                <td class="lesson-title">
+                                    ${lessonData.lesson.title}
+                                    ${badge}
+                                </td>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" 
+                                           class="custom-checkbox" 
+                                           id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_book"
+                                           onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'book')"
+                                           ${lessonData.bookChecked}>
+                                </td>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" 
+                                           class="custom-checkbox" 
+                                           id="${currentStudent}_${themeIdx}_${lessonData.lessonIdx}_online"
+                                           onchange="updateCheckbox(${themeIdx}, ${lessonData.lessonIdx}, 'online')"
+                                           ${lessonData.onlineChecked}>
+                                </td>
+                                <td style="text-align: center; font-size: 0.9em; color: #28a745;">
+                                    📅 ${displayDate}
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    activeThemesHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+                
+                activeThemesHtml += `
+                    </div>
+                `;
+            });
+            
+            // Render afgeronde thema's voor de sidebar
+            if (completedThemes.length > 0) {
+                completedThemes.forEach(({ theme, themeIdx, themeLessons, completedDate }) => {
+                    completedThemesHtml += `
+                        <div class="completed-theme-item" onclick="toggleTheme(${themeIdx})">
+                            <div class="completed-theme-name">✅ ${theme.name}</div>
+                            <div class="completed-theme-stats">
+                                <span>100% • ${themeLessons} lessen</span>
+                            </div>
+                            ${completedDate ? `<div class="completed-theme-date">📅 ${completedDate}</div>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                completedThemesHtml = '<div class="no-completed-themes">Nog geen thema\'s afgerond</div>';
+            }
+            
+            // Combineer alles
+            let html = `
+                <div class="student-info">
+                    <h2>👤 ${currentStudent}</h2>
+                    <div class="progress-summary"></div>
+                </div>
+                ${renderPlanningPanel(planning)}
+                <div class="main-layout">
+                    <div class="active-themes">
+                        ${activeThemesHtml}
+                    </div>
+                    <div class="completed-themes-sidebar">
+                        <h2>🏆 Afgeronde Thema's (${completedThemes.length})</h2>
+                        ${completedThemesHtml}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('content').innerHTML = html;
+            updateProgressSummary();
+        }
+        
+        function exportData() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling!');
+                return;
+            }
+            
+            const data = getStudentData(currentStudent);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentStudent.replace(/\s+/g, '_')}_voortgang.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function exportAllStudents() {
+            const students = getStudentsList();
+            
+            if (students.length === 0) {
+                alert('Er zijn nog geen leerlingen om te exporteren!');
+                return;
+            }
+            
+            const allData = {
+                exportDate: new Date().toISOString(),
+                studentsList: students,
+                studentsData: {}
+            };
+            
+            students.forEach(student => {
+                allData.studentsData[student] = getStudentData(student);
+            });
+            
+            const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.download = `Alle_Leerlingen_${dateStr}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert(`${students.length} leerlingen succesvol geëxporteerd!`);
+        }
+        
+        function importAllStudents() {
+            if (!confirm('Let op: Dit vervangt NIET je huidige leerlingen, maar voegt nieuwe leerlingen toe. Wil je doorgaan?')) {
+                return;
+            }
+            
+            document.getElementById('importGroupFile').click();
+        }
+        
+        function importData() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling!');
+                return;
+            }
+            
+            document.getElementById('importFile').click();
+        }
+        
+        document.getElementById('importFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    saveStudentData(currentStudent, data);
+                    
+                    // Upload ook naar Firebase
+                    console.log('📤 Start upload naar Firebase...');
+                    let uploadCount = 0;
+                    
+                    for (const themeIdx in data) {
+                        if (themeIdx === PLANNING_KEY) continue;
+                        for (const lessonIdx in data[themeIdx]) {
+                            await saveToFirebase(currentStudent, themeIdx, lessonIdx, data[themeIdx][lessonIdx]);
+                            uploadCount++;
+                        }
+                    }
+
+                    if (data[PLANNING_KEY]) {
+                        await savePlanningToFirebase(currentStudent, getNormalizedPlanning(data[PLANNING_KEY]));
+                    }
+                    
+                    renderStudentProgress();
+                    alert(`Data succesvol geïmporteerd!\n${uploadCount} lessen geüpload naar Firebase.`);
+                } catch (err) {
+                    alert('Fout bij het importeren van data: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            
+            this.value = '';
+        });
+        
+        document.getElementById('importGroupFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (!importedData.studentsList || !importedData.studentsData) {
+                        throw new Error('Ongeldig bestandsformaat');
+                    }
+                    
+                    const currentStudents = getStudentsList();
+                    let addedCount = 0;
+                    let skippedCount = 0;
+                    let updatedCount = 0;
+                    let totalLessons = 0;
+                    
+                    // Eerst lokaal opslaan
+                    importedData.studentsList.forEach(student => {
+                        if (currentStudents.length + addedCount >= MAX_STUDENTS) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        if (currentStudents.includes(student)) {
+                            saveStudentData(student, importedData.studentsData[student]);
+                            updatedCount++;
+                        } else {
+                            currentStudents.push(student);
+                            saveStudentData(student, importedData.studentsData[student]);
+                            addedCount++;
+                        }
+                    });
+                    
+                    if (addedCount > 0 || updatedCount > 0) {
+                        currentStudents.sort();
+                        saveStudentsList(currentStudents);
+                        updateStudentSelector();
+                    }
+                    
+                    // Dan uploaden naar Firebase
+                    console.log('📤 Start upload naar Firebase...');
+                    for (const studentName of importedData.studentsList) {
+                        if (currentStudents.includes(studentName)) {
+                            const studentData = importedData.studentsData[studentName];
+                            
+                            for (const themeIdx in studentData) {
+                                if (themeIdx === PLANNING_KEY) continue;
+                                for (const lessonIdx in studentData[themeIdx]) {
+                                    await saveToFirebase(studentName, themeIdx, lessonIdx, studentData[themeIdx][lessonIdx]);
+                                    totalLessons++;
+                                }
+                            }
+
+                            if (studentData[PLANNING_KEY]) {
+                                await savePlanningToFirebase(studentName, getNormalizedPlanning(studentData[PLANNING_KEY]));
+                            }
+                        }
+                    }
+                    
+                    let message = 'Import voltooid!\n\n';
+                    if (addedCount > 0) message += `✓ ${addedCount} nieuwe leerling(en) toegevoegd\n`;
+                    if (updatedCount > 0) message += `✓ ${updatedCount} leerling(en) bijgewerkt\n`;
+                    if (totalLessons > 0) message += `✓ ${totalLessons} lessen geüpload naar Firebase\n`;
+                    if (skippedCount > 0) message += `⚠ ${skippedCount} leerling(en) overgeslagen (maximum bereikt)`;
+                    
+                    alert(message);
+                    
+                    if (currentStudent) {
+                        renderStudentProgress();
+                    }
+                } catch (err) {
+                    alert('Fout bij het importeren: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            
+            this.value = '';
+        });
+        
+        function resetStudent() {
+            if (!currentStudent) {
+                alert('Selecteer eerst een leerling!');
+                return;
+            }
+            
+            if (confirm(`Weet je zeker dat je alle voortgang van ${currentStudent} wilt verwijderen?`)) {
+                const planning = getPlanning(currentStudent);
+                const hasPlanning = planning.startDate || Object.keys(planning.weeks || {}).length > 0;
+                const resetData = hasPlanning ? { [PLANNING_KEY]: planning } : {};
+                saveStudentData(currentStudent, resetData);
+                renderStudentProgress();
+                alert('Voortgang is gereset!');
+            }
+        }
+        
+        // ===== JSONBIN.IO FUNCTIES =====
+        // ===== FIREBASE FIRESTORE FUNCTIES =====
+        
+        async function loadFromFirebase() {
+            console.log('🔄 Start laden van Firebase Firestore...');
+            updateStudentSelector();
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, 'student_progress'));
+                console.log('📦 Data ontvangen:', querySnapshot.size, 'records');
+                
+                const studentsSet = new Set();
+                const studentsData = {};
+                
+                querySnapshot.forEach((docSnapshot) => {
+                    const record = docSnapshot.data();
+                    const studentName = record.studentName;
+                    studentsSet.add(studentName);
+                    
+                    if (!studentsData[studentName]) {
+                        studentsData[studentName] = {};
+                    }
+                    
+                    if (!studentsData[studentName][record.themeIndex]) {
+                        studentsData[studentName][record.themeIndex] = {};
+                    }
+                    
+                    studentsData[studentName][record.themeIndex][record.lessonIndex] = {
+                        book: record.bookCompleted,
+                        online: record.laptopCompleted,
+                        completedDate: record.completedDate,
+                        timestamp: record.timestamp
+                    };
+                });
+
+                const planningSnapshot = await getDocs(collection(db, 'student_planning'));
+                planningSnapshot.forEach((docSnapshot) => {
+                    const record = docSnapshot.data();
+                    const studentName = record.studentName || docSnapshot.id;
+                    studentsSet.add(studentName);
+
+                    if (!studentsData[studentName]) {
+                        studentsData[studentName] = {};
+                    }
+
+                    studentsData[studentName][PLANNING_KEY] = getNormalizedPlanning(record.planning);
+                });
+                
+                const studentsList = Array.from(studentsSet).sort();
+                localStorage.setItem('studentsList', JSON.stringify(studentsList));
+                
+                Object.keys(studentsData).forEach(student => {
+                    const key = `student_${student}`;
+                    localStorage.setItem(key, JSON.stringify(studentsData[student]));
+                });
+                
+                updateStudentSelector();
+                
+                if (currentStudent) {
+                    renderStudentProgress();
+                }
+                
+                console.log('✅ Data geladen van Firebase:', studentsList.length, 'leerlingen');
+                
+            } catch (error) {
+                console.error('❌ Fout bij laden van Firebase:', error);
+            }
+        }
+        
+        async function saveToFirebase(studentName, themeIndex, lessonIndex, lessonData) {
+            if (isSyncing) return;
+            isSyncing = true;
+            
+            try {
+                const docId = `${studentName}_${themeIndex}_${lessonIndex}`;
+                const docRef = doc(db, 'student_progress', docId);
+                
+                const record = {
+                    studentName: studentName,
+                    themeIndex: parseInt(themeIndex),
+                    lessonIndex: parseInt(lessonIndex),
+                    bookCompleted: lessonData.book || false,
+                    laptopCompleted: lessonData.online || false,
+                    completedDate: lessonData.completedDate || null,
+                    timestamp: lessonData.timestamp || null,
+                    updatedAt: new Date()
+                };
+                
+                await setDoc(docRef, record);
+                console.log('✅ Opgeslagen naar Firebase');
+                
+            } catch (error) {
+                console.error('Firebase sync error:', error);
+            } finally {
+                isSyncing = false;
+            }
+        }
+
+        async function savePlanningToFirebase(studentName, planning) {
+            try {
+                const docRef = doc(db, 'student_planning', studentName);
+                await setDoc(docRef, {
+                    studentName: studentName,
+                    planning: getNormalizedPlanning(planning),
+                    updatedAt: new Date()
+                });
+                console.log('Planning opgeslagen naar Firebase');
+            } catch (error) {
+                console.error('Firebase planning sync error:', error);
+            }
+        }
+        
+        async function deleteStudentFromFirebase(studentName) {
+            try {
+                const q = query(collection(db, 'student_progress'), where('studentName', '==', studentName));
+                const querySnapshot = await getDocs(q);
+                
+                const batch = writeBatch(db);
+                querySnapshot.forEach((docSnapshot) => {
+                    batch.delete(docSnapshot.ref);
+                });
+                
+                await batch.commit();
+                await deleteDoc(doc(db, 'student_planning', studentName));
+                console.log('✅ Leerling verwijderd uit Firebase');
+                
+            } catch (error) {
+                console.error('Firebase delete error:', error);
+            }
+        }
+        
+        async function renameStudentInFirebase(oldName, newName) {
+            try {
+                const q = query(collection(db, 'student_progress'), where('studentName', '==', oldName));
+                const querySnapshot = await getDocs(q);
+                
+                const batch = writeBatch(db);
+                querySnapshot.forEach((docSnapshot) => {
+                    const record = docSnapshot.data();
+                    const newDocId = `${newName}_${record.themeIndex}_${record.lessonIndex}`;
+                    const newDocRef = doc(db, 'student_progress', newDocId);
+                    
+                    batch.set(newDocRef, {
+                        ...record,
+                        studentName: newName,
+                        updatedAt: new Date()
+                    });
+                    
+                    batch.delete(docSnapshot.ref);
+                });
+                
+                await batch.commit();
+                const oldPlanningRef = doc(db, 'student_planning', oldName);
+                const oldPlanningSnapshot = await getDoc(oldPlanningRef);
+                if (oldPlanningSnapshot.exists()) {
+                    await setDoc(doc(db, 'student_planning', newName), {
+                        ...oldPlanningSnapshot.data(),
+                        studentName: newName,
+                        updatedAt: new Date()
+                    });
+                    await deleteDoc(oldPlanningRef);
+                }
+                console.log('✅ Naam gewijzigd in Firebase');
+                
+            } catch (error) {
+                console.error('Firebase rename error:', error);
+            }
+        }
+        
+        // ===== MAAK FUNCTIES GLOBAAL VOOR ONCLICK HANDLERS =====
+        // Dit is nodig omdat we type="module" gebruiken voor Firebase
+        window.addStudent = addStudent;
+        window.deleteStudent = deleteStudent;
+        window.renameStudent = renameStudent;
+        window.resetStudent = resetStudent;
+        window.exportData = exportData;
+        window.importData = importData;
+        window.exportAllStudents = exportAllStudents;
+        window.importAllStudents = importAllStudents;
+        window.toggleTheme = toggleTheme;
+        window.updatePlanningStartDate = updatePlanningStartDate;
+        window.updatePlanningWeek = updatePlanningWeek;
+    </script>
+</body>
+</html>
